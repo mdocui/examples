@@ -2,29 +2,14 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Chart bars */
+/* Chart bar and progress fill colors — library uses currentColor, app decides the accent */
 [data-mdocui-chart-bar] {
   background: #3b82f6 !important;
-  opacity: 0.7 !important;
+  opacity: 0.75 !important;
 }
-
-/* Progress bar fill */
 [data-mdocui-progress-fill] {
   background: #3b82f6 !important;
 }
-
-/* Buttons render inline when adjacent */
-[data-mdocui] {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-[data-mdocui] > *:not(button[data-mdocui-button]) {
-  flex-basis: 100%;
-}
-
-/* Progress bar track */
-.dark [data-mdocui-progress] > div:last-child {
+.dark [data-mdocui-progress-track] {
   background: #27272a !important;
 }
