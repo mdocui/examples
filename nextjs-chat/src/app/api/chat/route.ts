@@ -86,7 +86,10 @@ export async function POST(req: Request) {
 	if (process.env.OPENAI_API_KEY) {
 		return streamOpenAI(messages)
 	}
-	return new Response('No API key configured', { status: 500 })
+	return Response.json(
+		{ error: 'AI service is not configured. Please contact the administrator.' },
+		{ status: 503 },
+	)
 }
 
 async function streamAnthropic(messages: ChatMessage[]) {

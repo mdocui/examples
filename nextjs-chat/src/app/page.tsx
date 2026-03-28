@@ -47,7 +47,11 @@ export default function Chat() {
 					body: JSON.stringify({ messages: allMessages }),
 				})
 
-				if (!res.ok || !res.body) throw new Error('Stream failed')
+				if (!res.ok) {
+					const errorBody = await res.json().catch(() => null)
+					throw new Error(errorBody?.error ?? `Request failed (${res.status})`)
+				}
+				if (!res.body) throw new Error('No response stream')
 
 				const reader = res.body.getReader()
 				const decoder = new TextDecoder()
@@ -63,10 +67,11 @@ export default function Chat() {
 					)
 					scrollToBottom()
 				}
-			} catch {
+			} catch (err) {
+				const errorMessage = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
 				setMessages((prev) =>
 					prev.map((m) =>
-						m.id === assistantMsg.id ? { ...m, content: 'Something went wrong. Please try again.' } : m,
+						m.id === assistantMsg.id ? { ...m, content: `**Error:** ${errorMessage}` } : m,
 					),
 				)
 			}
