@@ -227,6 +227,10 @@ export const defaultGroups = [
 	{
 		name: 'Layout',
 		components: ['stack', 'grid', 'card', 'divider', 'accordion', 'tabs', 'tab'],
+		notes: [
+			'Use card > grid > stat for KPI dashboards',
+			'Use tabs > tab for multi-view data (by channel, region, period)',
+		],
 	},
 	{
 		name: 'Interactive',
@@ -236,6 +240,7 @@ export const defaultGroups = [
 	{
 		name: 'Data',
 		components: ['chart', 'table', 'stat', 'progress'],
+		notes: ['Nest chart and table inside card for context'],
 	},
 	{
 		name: 'Content',

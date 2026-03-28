@@ -1,14 +1,18 @@
 # mdocUI Examples
 
+[![GitHub](https://img.shields.io/github/stars/mdocui/mdocui?style=social)](https://github.com/mdocui/mdocui)
+[![npm core](https://img.shields.io/npm/v/@mdocui/core?label=%40mdocui%2Fcore&color=blue)](https://www.npmjs.com/package/@mdocui/core)
+[![npm react](https://img.shields.io/npm/v/@mdocui/react?label=%40mdocui%2Freact&color=blue)](https://www.npmjs.com/package/@mdocui/react)
+
 Example apps demonstrating [mdocUI](https://github.com/mdocui/mdocui) — generative UI for LLMs using Markdoc `{% %}` tag syntax.
 
 ## Examples
 
 | Example | Stack | Description |
 |---------|-------|-------------|
-| [nextjs-chat](./nextjs-chat) | Next.js 16, React 19 | Streaming chat UI with 22 generative components |
+| [ShopMetrics](./nextjs-chat) | Next.js 16, React 19, Tailwind v4 | E-commerce analytics with nested dashboards, charts, tables |
 
-## Running
+## Quick start
 
 ```bash
 cd nextjs-chat
@@ -20,11 +24,8 @@ pnpm dev
 
 Open http://localhost:3000
 
-## What these examples show
+## Links
 
-- System prompt auto-generated from component registry
-- Streaming LLM output parsed and rendered live
-- Charts, tables, stats, callouts, forms inline with prose
-- Button clicks send follow-up messages
-- Forms lock after submission
-- Works with Anthropic Claude or OpenAI GPT
+- [mdocUI GitHub](https://github.com/mdocui/mdocui)
+- [Documentation](https://mdocui.github.io)
+- [@mdocui/core](https://www.npmjs.com/package/@mdocui/core) | [@mdocui/react](https://www.npmjs.com/package/@mdocui/react) | [@mdocui/cli](https://www.npmjs.com/package/@mdocui/cli)
