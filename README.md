@@ -1,8 +1,14 @@
-# mdocUI Examples
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mdocui/.github/main/assets/logo.png" alt="mdocUI" width="400">
+</p>
 
-[![GitHub](https://img.shields.io/github/stars/mdocui/mdocui?style=social)](https://github.com/mdocui/mdocui)
-[![npm core](https://img.shields.io/npm/v/@mdocui/core?label=%40mdocui%2Fcore&color=blue)](https://www.npmjs.com/package/@mdocui/core)
-[![npm react](https://img.shields.io/npm/v/@mdocui/react?label=%40mdocui%2Freact&color=blue)](https://www.npmjs.com/package/@mdocui/react)
+<p align="center">
+  <a href="https://github.com/mdocui/mdocui"><img src="https://img.shields.io/github/stars/mdocui/mdocui?style=social" alt="GitHub stars"></a>
+  <a href="https://www.npmjs.com/package/@mdocui/core"><img src="https://img.shields.io/npm/v/@mdocui/core?label=%40mdocui%2Fcore&color=blue" alt="npm core"></a>
+  <a href="https://www.npmjs.com/package/@mdocui/react"><img src="https://img.shields.io/npm/v/@mdocui/react?label=%40mdocui%2Freact&color=blue" alt="npm react"></a>
+</p>
+
+# mdocUI Examples
 
 Example apps demonstrating [mdocUI](https://github.com/mdocui/mdocui) — generative UI for LLMs using Markdoc `{% %}` tag syntax.
 
