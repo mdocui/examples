@@ -96,6 +96,17 @@ export const allDefinitions = [
 		children: 'none',
 	}),
 	defineComponent({
+		name: 'textarea',
+		description: 'Multi-line text input',
+		props: z.object({
+			name: z.string().describe('Field name'),
+			label: z.string().optional().describe('Textarea label'),
+			placeholder: z.string().optional().describe('Placeholder text'),
+			rows: z.number().optional().describe('Number of visible rows'),
+		}),
+		children: 'none',
+	}),
+	defineComponent({
 		name: 'checkbox',
 		description: 'Toggle checkbox',
 		props: z.object({
@@ -105,12 +116,22 @@ export const allDefinitions = [
 		children: 'none',
 	}),
 	defineComponent({
+		name: 'toggle',
+		description: 'On/off toggle switch',
+		props: z.object({
+			name: z.string().describe('Field name'),
+			label: z.string().describe('Toggle label'),
+			checked: z.boolean().optional().describe('Default state'),
+		}),
+		children: 'none',
+	}),
+	defineComponent({
 		name: 'form',
 		description: 'Form container that groups inputs and submits their state',
 		props: z.object({
 			name: z.string().describe('Form identifier'),
 		}),
-		children: 'any',
+		children: ['input', 'textarea', 'select', 'checkbox', 'toggle', 'button'],
 	}),
 	defineComponent({
 		name: 'chart',
@@ -209,7 +230,7 @@ export const defaultGroups = [
 	},
 	{
 		name: 'Interactive',
-		components: ['button', 'button-group', 'input', 'select', 'checkbox', 'form'],
+		components: ['button', 'button-group', 'input', 'textarea', 'select', 'checkbox', 'toggle', 'form'],
 		notes: ['button action="continue" sends label as message', 'Wrap inputs in a form for state collection'],
 	},
 	{
