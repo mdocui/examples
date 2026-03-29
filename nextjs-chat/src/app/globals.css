@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+* {
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
 /* Chart bar and progress fill colors — library uses currentColor, app decides the accent */
 [data-mdocui-chart-bar] {
   background: #3b82f6 !important;

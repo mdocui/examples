@@ -1,248 +1,321 @@
-'use client'
+import Image from 'next/image'
+import Link from 'next/link'
+import { CopyButton } from './copy-button'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { MdocMessage } from './mdoc-message'
-import { useTheme } from './theme-provider'
+const installCmd = 'pnpm add @mdocui/core @mdocui/react'
 
-interface Message {
-	id: string
-	role: 'user' | 'assistant'
-	content: string
-}
+const features = [
+	{
+		title: '24 Components',
+		description: 'Layout, interactive, data, and content components out of the box.',
+	},
+	{
+		title: 'Streaming Parser',
+		description: 'Character-by-character tokenizer handles partial chunks in real-time.',
+	},
+	{
+		title: 'Zero Config Prose',
+		description: 'Built-in markdown rendering. No react-markdown dependency needed.',
+	},
+	{
+		title: 'CLI Scaffolder',
+		description: '`npx mdocui init` detects your framework and generates everything.',
+	},
+	{
+		title: 'Error Boundaries',
+		description: "One broken component won't crash your chat. Graceful per-component recovery.",
+	},
+	{
+		title: 'Theme Neutral',
+		description: 'Components use currentColor/inherit. Your theme, your rules.',
+	},
+]
 
-export default function Chat() {
-	const [messages, setMessages] = useState<Message[]>([])
-	const [input, setInput] = useState('')
-	const [isLoading, setIsLoading] = useState(false)
-	const scrollRef = useRef<HTMLDivElement>(null)
-	const messagesRef = useRef<Message[]>([])
-	const { theme, toggle, mounted } = useTheme()
+const packages = [
+	{
+		name: '@mdocui/core',
+		description: 'Streaming parser, registry, prompt generator',
+		badge: 'https://img.shields.io/npm/v/@mdocui/core?color=blue',
+		downloads: 'https://img.shields.io/npm/dm/@mdocui/core?color=green',
+		available: true,
+	},
+	{
+		name: '@mdocui/react',
+		description: '24 components, Renderer, useRenderer hook',
+		badge: 'https://img.shields.io/npm/v/@mdocui/react?color=blue',
+		downloads: 'https://img.shields.io/npm/dm/@mdocui/react?color=green',
+		available: true,
+	},
+	{
+		name: '@mdocui/cli',
+		description: 'Scaffold, generate, preview',
+		badge: 'https://img.shields.io/npm/v/@mdocui/cli?color=blue',
+		downloads: 'https://img.shields.io/npm/dm/@mdocui/cli?color=green',
+		available: true,
+	},
+	{
+		name: '@mdocui/vue',
+		description: 'Vue renderer',
+		badge: null,
+		downloads: null,
+		available: false,
+	},
+	{
+		name: '@mdocui/svelte',
+		description: 'Svelte renderer',
+		badge: null,
+		downloads: null,
+		available: false,
+	},
+]
 
-	useEffect(() => {
-		messagesRef.current = messages
-	}, [messages])
+const codeLines = [
+	{ text: '{% card title="Key Metrics" %}', parts: [
+		{ value: '{% ', color: 'text-blue-500 dark:text-blue-400' },
+		{ value: 'card', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: ' title=', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: '"Key Metrics"', color: 'text-orange-500 dark:text-orange-400' },
+		{ value: ' %}', color: 'text-blue-500 dark:text-blue-400' },
+	] },
+	{ text: '{% grid cols=3 %}', parts: [
+		{ value: '  {% ', color: 'text-blue-500 dark:text-blue-400' },
+		{ value: 'grid', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: ' cols=', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: '3', color: 'text-orange-500 dark:text-orange-400' },
+		{ value: ' %}', color: 'text-blue-500 dark:text-blue-400' },
+	] },
+	{ text: '{% stat ... /%}', parts: [
+		{ value: '  {% ', color: 'text-blue-500 dark:text-blue-400' },
+		{ value: 'stat', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: ' label=', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: '"Revenue"', color: 'text-orange-500 dark:text-orange-400' },
+		{ value: ' value=', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: '"$12,482"', color: 'text-orange-500 dark:text-orange-400' },
+		{ value: ' /%}', color: 'text-blue-500 dark:text-blue-400' },
+	] },
+	{ text: '{% stat ... /%}', parts: [
+		{ value: '  {% ', color: 'text-blue-500 dark:text-blue-400' },
+		{ value: 'stat', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: ' label=', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: '"Orders"', color: 'text-orange-500 dark:text-orange-400' },
+		{ value: ' value=', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: '"284"', color: 'text-orange-500 dark:text-orange-400' },
+		{ value: ' /%}', color: 'text-blue-500 dark:text-blue-400' },
+	] },
+	{ text: '{% stat ... /%}', parts: [
+		{ value: '  {% ', color: 'text-blue-500 dark:text-blue-400' },
+		{ value: 'stat', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: ' label=', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: '"Avg Order"', color: 'text-orange-500 dark:text-orange-400' },
+		{ value: ' value=', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: '"$43.95"', color: 'text-orange-500 dark:text-orange-400' },
+		{ value: ' /%}', color: 'text-blue-500 dark:text-blue-400' },
+	] },
+	{ text: '{% /grid %}', parts: [
+		{ value: '  {% ', color: 'text-blue-500 dark:text-blue-400' },
+		{ value: '/grid', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: ' %}', color: 'text-blue-500 dark:text-blue-400' },
+	] },
+	{ text: '{% /card %}', parts: [
+		{ value: '{% ', color: 'text-blue-500 dark:text-blue-400' },
+		{ value: '/card', color: 'text-teal-600 dark:text-teal-400' },
+		{ value: ' %}', color: 'text-blue-500 dark:text-blue-400' },
+	] },
+]
 
-	const scrollToBottom = () => {
-		setTimeout(() => {
-			scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-		}, 50)
-	}
-
-	const sendMessage = useCallback(
-		async (content: string) => {
-			const userMsg: Message = { id: crypto.randomUUID(), role: 'user', content }
-			const assistantMsg: Message = { id: crypto.randomUUID(), role: 'assistant', content: '' }
-
-			setMessages((prev) => [...prev, userMsg, assistantMsg])
-			setInput('')
-			setIsLoading(true)
-			scrollToBottom()
-
-			const allMessages = [...messagesRef.current, userMsg].map(({ role, content }) => ({ role, content }))
-
-			try {
-				const res = await fetch('/api/chat', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ messages: allMessages }),
-				})
-
-				if (!res.ok) {
-					const errorBody = await res.json().catch(() => null)
-					throw new Error(errorBody?.error ?? `Request failed (${res.status})`)
-				}
-				if (!res.body) throw new Error('No response stream')
-
-				const reader = res.body.getReader()
-				const decoder = new TextDecoder()
-				let accumulated = ''
-
-				while (true) {
-					const { done, value } = await reader.read()
-					if (done) break
-					accumulated += decoder.decode(value, { stream: true })
-					const current = accumulated
-					setMessages((prev) =>
-						prev.map((m) => (m.id === assistantMsg.id ? { ...m, content: current } : m)),
-					)
-					scrollToBottom()
-				}
-			} catch (err) {
-				const errorMessage = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
-				setMessages((prev) =>
-					prev.map((m) =>
-						m.id === assistantMsg.id ? { ...m, content: `**Error:** ${errorMessage}` } : m,
-					),
-				)
-			}
-
-			setIsLoading(false)
-		},
-		[],
-	)
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-		if (!input.trim() || isLoading) return
-		sendMessage(input.trim())
-	}
-
-	const handleAction = useCallback(
-		(event: { action: string; label?: string; formState?: Record<string, unknown>; params?: Record<string, unknown> }) => {
-			if (event.action === 'continue' && event.label) {
-				sendMessage(event.label)
-			} else if (event.action.startsWith('submit:') && event.formState) {
-				const summary = Object.entries(event.formState)
-					.map(([k, v]) => `${k}: ${v}`)
-					.join(', ')
-				sendMessage(`Form submitted: ${summary}`)
-			} else if (event.action === 'open_url' && event.params?.url) {
-				window.open(event.params.url as string, '_blank')
-			}
-		},
-		[sendMessage],
-	)
-
+export default function Home() {
 	return (
-		<div className="max-w-3xl mx-auto px-6 h-screen flex flex-col overflow-hidden">
-			<header className="relative flex items-center justify-between py-4 border-b border-zinc-200 dark:border-zinc-800">
-				<div>
-					<h1 className="text-xl font-semibold">
-						mdoc<span className="text-zinc-400 dark:text-zinc-500">UI</span>{' '}
-						<span className="text-zinc-400 dark:text-zinc-500 font-normal">ShopMetrics</span>
+		<div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+			{/* Hero — always dark for logo visibility */}
+			<div className="bg-zinc-950 text-zinc-100">
+			<section className="relative px-6 pt-20 pb-24 flex flex-col items-center text-center max-w-4xl mx-auto">
+				<div className="flex flex-col items-center">
+					{/* Gradient glow behind heading */}
+					<div className="absolute top-16 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+					<Image
+						src="https://raw.githubusercontent.com/mdocui/.github/main/assets/logo.png"
+						alt="mdocUI logo"
+						width={300}
+						height={80}
+						className="mb-8 relative"
+						unoptimized
+					/>
+					<h1 className="relative text-4xl sm:text-5xl font-bold tracking-tight mb-4">
+						Generative UI for LLMs
 					</h1>
-					<p className="text-zinc-400 dark:text-zinc-500 text-xs mt-0.5">E-commerce Analytics Demo</p>
-				</div>
-				<div className="flex items-center gap-3">
-					<a
-						href="https://github.com/mdocui/mdocui"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<img
-							src="https://img.shields.io/github/stars/mdocui/mdocui?style=social"
-							alt="GitHub stars"
-							className="h-5"
-						/>
-					</a>
-					<a
-						href="https://www.npmjs.com/package/@mdocui/core"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<img
-							src="https://img.shields.io/npm/v/@mdocui/core?label=npm&color=blue"
-							alt="npm version"
-							className="h-5"
-						/>
-					</a>
-					<button
-						type="button"
-						onClick={toggle}
-						className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-zinc-500 w-8 h-8 flex items-center justify-center"
-						aria-label="Toggle theme"
-					>
-						{mounted ? (theme === 'dark' ? '☀️' : '🌙') : ''}
-					</button>
-				</div>
-			</header>
+					<p className="text-lg text-zinc-400 max-w-2xl mb-10 leading-relaxed">
+						LLMs write markdown and drop interactive UI components in the same stream — charts, buttons, forms, tables, cards. No custom DSL, no JSON blocks.
+					</p>
 
-			<div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto py-6 space-y-4">
-				{messages.length === 0 && (
-					<div className="text-center text-zinc-500 dark:text-zinc-600 py-20">
-						<p className="text-lg">Ask me anything about your store.</p>
-						<p className="text-sm mt-2">Try a suggestion below or type your own question.</p>
+					<div className="relative inline-block w-full max-w-lg">
+						<pre className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-sm font-mono text-zinc-300 pr-12 overflow-x-auto">
+							{installCmd}
+						</pre>
+						<CopyButton text={installCmd} />
 					</div>
-				)}
 
-				{messages.map((msg) => (
-					<div
-						key={msg.id}
-						className={`p-4 rounded-xl ${
-							msg.role === 'user'
-								? 'bg-blue-50 dark:bg-blue-950/50 ml-12'
-								: 'bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800'
-						}`}
-					>
-						<div className="text-[10px] text-zinc-500 mb-2 font-medium uppercase tracking-wider">
-							{msg.role === 'user' ? 'You' : 'Assistant'}
-						</div>
-						{msg.role === 'user' ? (
-							<div>{msg.content}</div>
-						) : (
-							<>
-								<MdocMessage
-									content={msg.content}
-									isStreaming={isLoading && msg.id === messages[messages.length - 1]?.id}
-									onAction={handleAction}
-								/>
-								{isLoading && msg.id === messages[messages.length - 1]?.id && (
-									<div className="flex items-center gap-1 mt-2 text-zinc-400">
-										<span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-										<span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse [animation-delay:150ms]" />
-										<span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse [animation-delay:300ms]" />
-									</div>
-								)}
-							</>
-						)}
+					<div className="flex items-center justify-center gap-4 mt-6 mb-2">
+						<a href="https://github.com/mdocui/mdocui" target="_blank" rel="noopener noreferrer">
+							<img src="https://img.shields.io/github/stars/mdocui/mdocui?style=social" alt="GitHub stars" className="h-5" />
+						</a>
+						<a href="https://www.npmjs.com/package/@mdocui/core" target="_blank" rel="noopener noreferrer">
+							<img src="https://img.shields.io/npm/v/@mdocui/core?label=npm&color=blue" alt="npm version" className="h-5" />
+						</a>
 					</div>
-				))}
+
+					<div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-6">
+						<Link
+							href="/demo/ecommerce"
+							className="px-5 sm:px-6 py-3 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+						>
+							Try Demo
+						</Link>
+						<a
+							href="https://mdocui.github.io"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="px-5 sm:px-6 py-3 rounded-lg border border-zinc-700 text-zinc-300 text-sm font-medium hover:border-zinc-500 hover:text-zinc-100 transition-colors"
+						>
+							Documentation
+						</a>
+						<a
+							href="https://github.com/mdocui/mdocui"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="px-5 sm:px-6 py-3 rounded-lg border border-zinc-700 text-zinc-300 text-sm font-medium hover:border-zinc-500 hover:text-zinc-100 transition-colors"
+						>
+							GitHub
+						</a>
+					</div>
+				</div>
+			</section>
 			</div>
 
-			{messages.length === 0 && (
-				<div className="flex flex-wrap gap-2 pb-3">
-					{[
-						"Show me today's dashboard",
-						'Top selling products this month',
-						'Customer retention analysis',
-						'Inventory alerts',
-						'Revenue by channel breakdown',
-					].map((suggestion) => (
-						<button
-							key={suggestion}
-							type="button"
-							onClick={() => sendMessage(suggestion)}
-							disabled={isLoading}
-							className="px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-500 text-xs hover:border-blue-500 transition-colors cursor-pointer disabled:opacity-50"
+			{/* Code Example */}
+			<section className="px-6 py-20 max-w-5xl mx-auto">
+				<h2 className="text-2xl font-bold text-center mb-12">What the LLM writes</h2>
+				<div className="grid md:grid-cols-2 gap-8 items-start">
+					<div className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
+						<div className="px-4 py-2 text-xs text-zinc-500 uppercase tracking-wider border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-800/50">
+							mdocUI Markup
+						</div>
+						<div className="p-4 font-mono text-xs sm:text-sm leading-6 sm:leading-7 overflow-x-auto">
+							{codeLines.map((line, i) => (
+								<div key={i} className="flex whitespace-nowrap">
+									<span className="select-none w-6 sm:w-8 text-right mr-3 sm:mr-4 text-zinc-400 dark:text-zinc-600 text-xs leading-6 sm:leading-7">{i + 1}</span>
+									<span>
+										{line.parts.map((part, j) => (
+											<span key={j} className={part.color}>{part.value}</span>
+										))}
+									</span>
+								</div>
+							))}
+						</div>
+					</div>
+					<div className="flex flex-col justify-center">
+						<h3 className="text-xl font-semibold mb-3">Markdoc syntax, zero friction</h3>
+						<p className="text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+							The LLM streams plain text with <code className="text-blue-600 dark:text-blue-400 bg-zinc-100 dark:bg-zinc-900 px-1.5 py-0.5 rounded text-xs">{`{% tag %}`}</code> delimiters. The streaming parser tokenizes each chunk as it arrives and renders live UI components — stats, charts, tables, forms — inline with prose.
+						</p>
+						<p className="text-zinc-500 dark:text-zinc-400 leading-relaxed">
+							No JSON schema negotiation. No tool calls. No post-processing. The model just writes, and users see rich interactive UI appear character by character.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			{/* Features Grid */}
+			<section className="px-6 py-20 max-w-5xl mx-auto">
+				<h2 className="text-2xl font-bold text-center mb-12">Built for real-time AI interfaces</h2>
+				<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+					{features.map((feature) => (
+						<div
+							key={feature.title}
+							className="p-8 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50"
 						>
-							{suggestion}
-						</button>
+							<h3 className="text-base font-semibold mb-2">{feature.title}</h3>
+							<p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">{feature.description}</p>
+						</div>
 					))}
 				</div>
-			)}
+			</section>
 
-			<div className="border-t border-zinc-200 dark:border-zinc-800">
-				<form onSubmit={handleSubmit} className="flex gap-2 py-3">
-					<input
-						value={input}
-						onChange={(e) => setInput(e.target.value)}
-						placeholder="Type a message..."
-						disabled={isLoading}
-						className="flex-1 px-4 py-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 text-sm outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
-					/>
-					<button
-						type="submit"
-						disabled={isLoading || !input.trim()}
-						className="px-6 py-3 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+			{/* Packages */}
+			<section className="px-6 py-20 max-w-6xl mx-auto">
+				<h2 className="text-2xl font-bold text-center mb-12">Packages</h2>
+				<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+					{packages.map((pkg) => (
+						<div
+							key={pkg.name}
+							className="p-8 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex flex-col"
+						>
+							<h3 className="text-sm font-semibold font-mono mb-1">{pkg.name}</h3>
+							<p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4 flex-1">{pkg.description}</p>
+							<div className="flex items-center gap-3 flex-wrap">
+								{pkg.badge ? (
+									<>
+										<img src={pkg.badge} alt={`${pkg.name} version`} className="h-5" />
+										{pkg.downloads && (
+											<img src={pkg.downloads} alt={`${pkg.name} downloads`} className="h-5" />
+										)}
+									</>
+								) : (
+									<span className="text-xs text-zinc-500 dark:text-zinc-600 bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded">
+										Coming Soon
+									</span>
+								)}
+								{pkg.available && (
+									<span className="text-xs text-emerald-600 dark:text-emerald-400">Available</span>
+								)}
+							</div>
+						</div>
+					))}
+				</div>
+			</section>
+
+			{/* Playground CTA */}
+			<section className="px-6 py-20 text-center">
+				<div className="inline-block rounded-xl p-[2px] bg-gradient-to-r from-blue-500 via-blue-600 to-cyan-500">
+					<Link
+						href="/playground"
+						className="inline-block px-10 py-4 rounded-[10px] bg-white dark:bg-zinc-950 text-blue-600 dark:text-blue-400 text-base font-semibold hover:bg-blue-50 dark:hover:bg-zinc-900 transition-colors"
 					>
-						Send
-					</button>
-				</form>
-				<p className="text-center text-[10px] text-zinc-400 pb-2">
-					Powered by{' '}
-					<a href="https://github.com/mdocui/mdocui" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">
-						mdocUI
-					</a>
-					{' '}&middot;{' '}
-					<a href="https://mdocui.github.io" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">
-						Documentation
-					</a>
-					{' '}&middot;{' '}
-					<a href="https://www.npmjs.com/org/mdocui" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">
-						npm
+						Try the Playground
+					</Link>
+				</div>
+				<p className="text-zinc-500 dark:text-zinc-500 text-sm mt-4">
+					Write mdocUI markup and see it render live
+				</p>
+			</section>
+
+			{/* Footer — always dark */}
+			<footer className="bg-zinc-950 text-zinc-100 border-t border-zinc-800 px-6 py-12">
+				<div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+					<div className="flex items-center gap-3">
+						<Image
+							src="https://raw.githubusercontent.com/mdocui/.github/main/assets/logo.png"
+							alt="mdocUI"
+							width={140}
+							height={38}
+							unoptimized
+						/>
+					</div>
+					<nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-zinc-500">
+						<a href="https://github.com/mdocui/mdocui" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">GitHub</a>
+						<a href="https://www.npmjs.com/org/mdocui" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">npm</a>
+						<a href="https://mdocui.github.io" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">Documentation</a>
+						<Link href="/demo/ecommerce" className="hover:text-zinc-300 transition-colors">Live Demo</Link>
+						<a href="https://github.com/mdocui/mdocui/blob/main/SKILL.md" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">SKILL.md</a>
+					</nav>
+				</div>
+				<p className="text-center text-xs text-zinc-600 mt-8">
+					MIT License &middot; Built by{' '}
+					<a href="https://github.com/pnutmath" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">
+						pnutmath
 					</a>
 				</p>
-			</div>
+			</footer>
 		</div>
 	)
 }

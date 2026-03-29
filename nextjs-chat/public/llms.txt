@@ -1,0 +1,56 @@
+# mdocUI
+
+> Generative UI library for LLMs using Markdoc tag syntax inline with markdown prose
+
+## Overview
+
+mdocUI lets LLMs write natural markdown and drop interactive UI components in the same stream using Markdoc `{% %}` tag syntax. The streaming parser tokenizes chunks character-by-character and the React renderer displays 24 theme-neutral components — charts, buttons, forms, tables, cards, and more.
+
+## Packages
+
+- @mdocui/core: Streaming parser, component registry, system prompt generator
+- @mdocui/react: React renderer, 24 theme-neutral components, useRenderer hook
+- @mdocui/cli: Project scaffolder, preview server, prompt generator
+
+## Key Concepts
+
+- Markdoc `{% %}` tag syntax for inline UI with prose
+- Streaming-first: character-by-character tokenizer handles partial chunks
+- Two-layer prompt system: library auto-generates syntax docs, app adds domain context
+- Theme-neutral: components use currentColor/inherit, consumers style via classNames
+- One-shot interactions: buttons disable after click, forms lock after submit
+- Error boundaries: per-component recovery, one failure won't crash the tree
+
+## Syntax
+
+Self-closing tag:
+{% button action="continue" label="Click me" /%}
+
+Body tag:
+{% card title="Hello" %}
+Content here with **markdown** support.
+{% /card %}
+
+Nested:
+{% card title="Dashboard" %}
+{% grid cols=3 %}
+{% stat label="Revenue" value="$12K" /%}
+{% /grid %}
+{% /card %}
+
+## Components (24)
+
+Layout: stack, grid, card, divider, accordion, tabs, tab
+Interactive: button, button-group, input, textarea, select, checkbox, toggle, form
+Data: chart, table, stat, progress
+Content: callout, badge, image, code-block, link
+
+## Links
+
+- Homepage: https://mdocui.vercel.app
+- Documentation: https://mdocui.github.io
+- GitHub: https://github.com/mdocui/mdocui
+- npm: https://www.npmjs.com/org/mdocui
+- SKILL.md: https://github.com/mdocui/mdocui/blob/main/SKILL.md
+- Live Demo: https://mdocui.vercel.app/demo/ecommerce
+- Playground: https://mdocui.vercel.app/playground
