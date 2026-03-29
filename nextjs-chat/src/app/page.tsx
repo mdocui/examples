@@ -289,6 +289,45 @@ export default function Home() {
 				</p>
 			</section>
 
+			{/* Roadmap */}
+			<section className="px-6 py-20 max-w-5xl mx-auto">
+				<h2 className="text-2xl font-bold text-center mb-12">Roadmap</h2>
+				<div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+					<div className="p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+						<span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Available</span>
+						<h3 className="text-base font-semibold mt-2 font-mono">@mdocui/core</h3>
+						<p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Streaming parser, registry, prompt generator</p>
+					</div>
+					<div className="p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+						<span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Available</span>
+						<h3 className="text-base font-semibold mt-2 font-mono">@mdocui/react</h3>
+						<p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">24 components, Renderer, useRenderer hook</p>
+					</div>
+					<div className="p-6 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30">
+						<span className="text-xs text-zinc-500 dark:text-zinc-600 font-medium">Coming Soon</span>
+						<h3 className="text-base font-semibold mt-2 font-mono">@mdocui/vue</h3>
+						<p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Vue renderer with the same 24 components</p>
+					</div>
+					<div className="p-6 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30">
+						<span className="text-xs text-zinc-500 dark:text-zinc-600 font-medium">Coming Soon</span>
+						<h3 className="text-base font-semibold mt-2 font-mono">@mdocui/svelte</h3>
+						<p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Svelte renderer</p>
+					</div>
+				</div>
+				<div className="mt-8 grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+					<div className="p-6 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30">
+						<span className="text-xs text-zinc-500 dark:text-zinc-600 font-medium">Planned</span>
+						<h3 className="text-base font-semibold mt-2">VS Code Extension</h3>
+						<p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Syntax highlighting and autocomplete for {`{% %}`} tags</p>
+					</div>
+					<div className="p-6 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30">
+						<span className="text-xs text-zinc-500 dark:text-zinc-600 font-medium">Planned</span>
+						<h3 className="text-base font-semibold mt-2">v1.0.0</h3>
+						<p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Stable API, frozen component props, CHANGELOG</p>
+					</div>
+				</div>
+			</section>
+
 			{/* Footer — always dark */}
 			<footer className="bg-zinc-950 text-zinc-100 border-t border-zinc-800 px-6 py-12">
 				<div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">

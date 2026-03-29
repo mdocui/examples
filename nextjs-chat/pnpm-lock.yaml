@@ -12,11 +12,11 @@ importers:
         specifier: ^0.80.0
         version: 0.80.0(zod@4.3.6)
       '@mdocui/core':
-        specifier: ^0.6.1
-        version: 0.6.1
+        specifier: ^0.6.3
+        version: 0.6.3
       '@mdocui/react':
-        specifier: ^0.6.1
-        version: 0.6.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^0.6.3
+        version: 0.6.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       next:
         specifier: ^16.2.0
         version: 16.2.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -246,11 +246,11 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mdocui/core@0.6.1':
-    resolution: {integrity: sha512-JmjlY9LaBSlVvxC8kjcOdvqNJEjmQRlvN81YMgen5YDQxxF2o9VQNnVAMd6eYNKjZ37D9iESmMaJctDVDJyiEQ==}
+  '@mdocui/core@0.6.3':
+    resolution: {integrity: sha512-OH6nAsa2cWsIyLKcwiAy+ckyhQT69dFF1v2Qphhn0qgl2lZsd0QWOo59GKAYtxzlGH5EI+7GA5AexzSr4cFLyA==}
 
-  '@mdocui/react@0.6.1':
-    resolution: {integrity: sha512-qdy4k0DWQVfZHuxPXGTBQ11D7ziacvTAJ5vaCiNqqKjwajZ+VnGl2aKQJA1OtJSxEeQFmI342JHwZxcVcFe/hw==}
+  '@mdocui/react@0.6.3':
+    resolution: {integrity: sha512-B6UE4bGDuC5iybo11WdjApZPp3ON7d9m1ewwCFpC9MydxF0nIbX/UmMM5ZgXwnC25ujMIUYA5dDWkqisE6XTrA==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -1027,13 +1027,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@mdocui/core@0.6.1':
+  '@mdocui/core@0.6.3':
     dependencies:
       zod: 4.3.6
 
-  '@mdocui/react@0.6.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@mdocui/react@0.6.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
-      '@mdocui/core': 0.6.1
+      '@mdocui/core': 0.6.3
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
