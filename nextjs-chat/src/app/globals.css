@@ -19,6 +19,39 @@
   display: none !important;
 }
 
+/* ─── Grid responsive — horizontal scroll for 3+ columns ─── */
+[data-mdocui-grid] {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: 4px !important;
+}
+[data-mdocui-grid]::-webkit-scrollbar {
+  height: 4px;
+}
+[data-mdocui-grid]::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 9999px;
+}
+.dark [data-mdocui-grid]::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+}
+/* On narrow screens, switch grids with 3+ cols to min-width columns so they scroll */
+@media (max-width: 640px) {
+  [data-mdocui-grid] {
+    grid-template-columns: 1fr !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* ─── Table responsive — horizontal scroll on overflow ─── */
+[data-mdocui-table] {
+  display: block !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ─── Card ─── */
 [data-mdocui-card] {
   border: 1px solid #e4e4e7 !important;

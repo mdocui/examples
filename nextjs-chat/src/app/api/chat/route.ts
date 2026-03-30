@@ -6,9 +6,11 @@ import { ComponentRegistry, generatePrompt, allDefinitions, defaultGroups } from
 const registry = new ComponentRegistry()
 registry.registerAll(allDefinitions)
 
-const systemPrompt = generatePrompt(registry, {
+function buildSystemPrompt() {
+	const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+	return generatePrompt(registry, {
 	preamble:
-		'You are an e-commerce analytics assistant for ShopMetrics. You help store owners understand their sales, customers, inventory, and marketing performance. Use realistic but fictional data.',
+		`You are an e-commerce analytics assistant for ShopMetrics. You help store owners understand their sales, customers, inventory, and marketing performance.\n\nToday is ${today}. Generate fresh, varied, realistic fictional data for every response — never repeat the same numbers. Vary product names, revenue figures, growth percentages, and trends across conversations.`,
 	groups: defaultGroups,
 	additionalRules: [
 		'CRITICAL: ALWAYS wrap stat components inside a grid — never render stat without a grid parent. Use grid cols=3 or cols=4 for KPI dashboards',
@@ -18,7 +20,9 @@ const systemPrompt = generatePrompt(registry, {
 		'Use callout type="warning" for alerts (low stock, churn), type="success" for positive highlights',
 		'Use accordion to hide detailed breakdowns — users expand what they need',
 		'Use tabs with tab children for multi-view data — by channel, by region, by time period',
-		'For product listings, use a card per section with a table showing Product, Price, Units, Revenue columns',
+		'For product browsing/shopping queries ("show me shoes", "find laptops under $500"), render products as cards in a grid cols=3. Each card has NO title prop. Inside each card put: image tag, then prose with **Product Name** on its own line, then price and rating on same line like "**$149.99** · 4.8★ · {% badge label="In Stock" variant="success" /%}", then a short one-line description, then a button with the product name in the label like "View CloudRunner Pro" (NEVER just "View Details" — the label is sent as the follow-up message so it must identify the product). Use placeholder images: https://placehold.co/300x200/EBF4FF/3B82F6?text=ProductName (replace spaces with +). Do NOT use stat for price — stat is for KPI dashboards only.',
+		'For product detail queries ("tell me about X", "details on Y"), show a single card with: large image, product name in prose as heading, price/rating/stock as bold prose, detailed description paragraph, and action buttons (Add to Cart, Compare). Do NOT use stat for price.',
+		'For analytics/reporting, use table with headers and rows for product lists, order details, inventory — always inside a card',
 		'Nest components richly: card > grid > stat, card > chart, card > table, tabs > tab > card > chart',
 		'End every response with 2-3 actionable follow-up buttons using action="continue"',
 		'Lead with a one-line summary, then show rich components, then follow-up buttons',
@@ -61,8 +65,50 @@ const systemPrompt = generatePrompt(registry, {
 
 {% button action="continue" label="Show trending products" /%}
 {% button action="continue" label="Inventory status" /%}`,
+
+		`Here are the top running shoes under $200:
+
+{% grid cols=3 %}
+{% card %}
+{% image src="https://placehold.co/300x200/EBF4FF/3B82F6?text=CloudRunner+Pro" alt="CloudRunner Pro" /%}
+
+**CloudRunner Pro**
+
+**$149.99** · 4.8★ · {% badge label="In Stock" variant="success" /%}
+
+Lightweight mesh upper with responsive cushioning for daily runs.
+
+{% button action="continue" label="View CloudRunner Pro" variant="primary" /%}
+{% /card %}
+{% card %}
+{% image src="https://placehold.co/300x200/EBF4FF/3B82F6?text=TrailBlazer+X" alt="TrailBlazer X" /%}
+
+**TrailBlazer X**
+
+**$179.00** · 4.6★ · {% badge label="Low Stock" variant="warning" /%}
+
+Rugged outsole built for off-road terrain and trail running.
+
+{% button action="continue" label="View TrailBlazer X" variant="primary" /%}
+{% /card %}
+{% card %}
+{% image src="https://placehold.co/300x200/EBF4FF/3B82F6?text=SpeedLite+3" alt="SpeedLite 3" /%}
+
+**SpeedLite 3**
+
+**$189.95** · 4.9★ · {% badge label="In Stock" variant="success" /%}
+
+Carbon plate design for race day performance and speed.
+
+{% button action="continue" label="View SpeedLite 3" variant="primary" /%}
+{% /card %}
+{% /grid %}
+
+{% button action="continue" label="Filter by brand" variant="outline" /%}
+{% button action="continue" label="Sort by price" variant="outline" /%}
+{% button action="continue" label="Compare selected" variant="outline" /%}`,
 	],
-})
+})}
 
 // Validate request body — prevents malformed/oversized input
 const BodySchema = z.object({
@@ -97,7 +143,7 @@ async function streamAnthropic(messages: ChatMessage[]) {
 	const stream = await client.messages.stream({
 		model: 'claude-haiku-4-5-20251001',
 		max_tokens: 4096,
-		system: systemPrompt,
+		system: buildSystemPrompt(),
 		messages,
 	})
 
@@ -128,7 +174,7 @@ async function streamOpenAI(messages: ChatMessage[]) {
 		model: 'gpt-4o-mini',
 		max_tokens: 4096,
 		stream: true,
-		messages: [{ role: 'system', content: systemPrompt }, ...messages],
+		messages: [{ role: 'system', content: buildSystemPrompt() }, ...messages],
 	})
 
 	const encoder = new TextEncoder()

@@ -208,8 +208,8 @@ export default function Chat() {
 													isStreaming={isStreamingThis}
 													onAction={handleAction}
 												/>
-												{isStreamingThis && !msg.content && (
-													<div className="flex items-center gap-1.5 py-1">
+												{isStreamingThis && (
+													<div className="flex items-center gap-1.5 pt-3 mt-2 border-t border-zinc-100 dark:border-zinc-800">
 														<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
 														<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse [animation-delay:150ms]" />
 														<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse [animation-delay:300ms]" />
