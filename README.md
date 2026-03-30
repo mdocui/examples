@@ -30,6 +30,16 @@ pnpm dev
 
 Open http://localhost:3000
 
+### Playground
+
+Visit `/playground` in the running app to experiment with mdocUI tags interactively.
+
+### Latest features (v0.6.4)
+
+- **Shimmer placeholders** — animated loading state while components stream in (`ComponentShimmer` or custom `renderPendingComponent`)
+- **`contextData`** — pass arbitrary app data to components via the Renderer prop
+- **Verbosity prompt modes** — `generatePrompt(registry, { verbosity: 'minimal' | 'default' | 'detailed' })` controls system prompt size
+
 ## Links
 
 - [Live Demo](https://mdocui.vercel.app)
