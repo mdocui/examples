@@ -9,13 +9,12 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
-    "@mdocui/core": "^0.6.3",
-    "@mdocui/react": "^0.6.3",
+    "@mdocui/core": "^0.6.6",
+    "@mdocui/react": "^0.6.6",
     "next": "^16.2.0",
     "openai": "^6.33.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-markdown": "^10.1.0",
     "zod": "^4.3.0"
   },
   "devDependencies": {

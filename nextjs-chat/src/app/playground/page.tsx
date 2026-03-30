@@ -2,33 +2,72 @@
 
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
 import { StreamingParser } from '@mdocui/core'
-import { Renderer, createDefaultRegistry } from '@mdocui/react'
+import { Renderer, createDefaultRegistry, SimpleMarkdown } from '@mdocui/react'
 
 const registry = createDefaultRegistry()
 const knownTags = registry.knownTags()
 
-const defaultMarkup = `Here are the key metrics for your dashboard:
+const defaultMarkup = `## Store Dashboard — March 2026
 
 {% card title="Key Metrics" %}
-{% grid cols=3 %}
-{% stat label="Revenue" value="$12,482" change="+8.3%" trend="up" /%}
-{% stat label="Orders" value="284" change="+12%" trend="up" /%}
-{% stat label="Avg Order" value="$43.95" change="-2.1%" trend="down" /%}
+{% grid cols=4 %}
+{% stat label="Revenue" value="$48,290" change="+12.4%" trend="up" /%}
+{% stat label="Orders" value="1,284" change="+8%" trend="up" /%}
+{% stat label="Customers" value="892" change="+5.2%" trend="up" /%}
+{% stat label="Avg Order" value="$37.61" change="-1.8%" trend="down" /%}
 {% /grid %}
 {% /card %}
 
-{% card title="Weekly Revenue" %}
-{% chart type="bar" labels=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] values=[1420,1680,1530,1890,2100,2340,1520] title="Daily Revenue" /%}
+{% card title="Revenue Trend" %}
+{% chart type="line" labels=["Jan","Feb","Mar","Apr","May","Jun"] values=[32100,28400,35200,41800,39600,48290] title="Monthly Revenue (2026)" /%}
 {% /card %}
 
-{% callout type="info" title="Getting Started" %}
-Edit the markup on the left to see it render in real-time. mdocUI uses Markdoc syntax with \`{% tag %}\` delimiters.
+{% tabs labels=["Top Products","By Channel","Inventory"] %}
+{% tab label="Top Products" %}
+{% table headers=["Product","Units","Revenue","Margin"] rows=[["Wireless Earbuds Pro",842,"$33,680","42%"],["USB-C Hub 7-in-1",631,"$18,930","38%"],["Laptop Stand",524,"$15,720","45%"],["MagSafe Case",498,"$7,470","52%"],["Screen Protector 3-Pack",412,"$4,120","65%"]] /%}
+{% /tab %}
+{% tab label="By Channel" %}
+{% grid cols=3 %}
+{% stat label="Website" value="$28,974" change="+15%" trend="up" /%}
+{% stat label="Mobile App" value="$12,072" change="+22%" trend="up" /%}
+{% stat label="Marketplace" value="$7,244" change="-3%" trend="down" /%}
+{% /grid %}
+{% chart type="pie" labels=["Website","Mobile App","Marketplace"] values=[60,25,15] title="Revenue Share %" /%}
+{% /tab %}
+{% tab label="Inventory" %}
+{% table headers=["Product","Stock","Status","Reorder"] rows=[["Wireless Earbuds Pro",124,"OK","No"],["USB-C Hub 7-in-1",18,"Low","Yes"],["Laptop Stand",203,"OK","No"],["MagSafe Case",7,"Critical","Yes"]] /%}
+{% callout type="warning" title="Low Stock Alert" %}
+2 products need reordering before the weekend rush.
+{% /callout %}
+{% /tab %}
+{% /tabs %}
+
+{% card title="Monthly Target" %}
+{% progress value=78 label="Revenue Goal — $62,000" /%}
+{% /card %}
+
+{% accordion title="Customer Segments" %}
+{% grid cols=2 %}
+{% stat label="New Customers" value="234" change="+18%" trend="up" /%}
+{% stat label="Returning" value="658" change="+3%" trend="up" /%}
+{% /grid %}
+{% /accordion %}
+
+{% callout type="success" title="Milestone" %}
+You've crossed **$45K monthly revenue** for the first time! {% badge label="New Record" variant="success" /%}
 {% /callout %}
 
-{% button-group %}
-{% button action="continue" label="View Details" variant="primary" /%}
-{% button action="continue" label="Export Data" variant="outline" /%}
-{% /button-group %}`
+{% card title="Quick Actions" %}
+{% form name="export" %}
+{% select name="report" label="Report Type" options=["Sales Summary","Product Performance","Customer Analytics","Inventory Status"] /%}
+{% select name="format" label="Format" options=["PDF","CSV","Excel"] /%}
+{% button action="submit:export" label="Export Report" variant="primary" /%}
+{% /form %}
+{% /card %}
+
+{% button action="continue" label="View full analytics" variant="primary" /%}
+{% button action="continue" label="Compare with last month" variant="outline" /%}
+{% button action="continue" label="Forecast next quarter" variant="ghost" /%}`
 
 export default function Playground() {
 	const [content, setContent] = useState(defaultMarkup)
@@ -49,15 +88,16 @@ export default function Playground() {
 		}
 	}, [])
 
-	const { nodes, nodeCount, errors } = useMemo(() => {
+	const { nodes, meta, nodeCount, errors } = useMemo(() => {
 		try {
 			const parser = new StreamingParser({ knownTags })
 			parser.write(debouncedContent)
 			parser.flush()
 			const parsed = parser.getNodes()
-			return { nodes: parsed, nodeCount: parsed.length, errors: 0 }
+			const parseMeta = parser.getMeta()
+			return { nodes: parsed, meta: parseMeta, nodeCount: parsed.length, errors: 0 }
 		} catch {
-			return { nodes: [], nodeCount: 0, errors: 1 }
+			return { nodes: [], meta: { errors: [], nodeCount: 0, isComplete: true }, nodeCount: 0, errors: 1 }
 		}
 	}, [debouncedContent])
 
@@ -94,7 +134,19 @@ export default function Playground() {
 						{errors > 0 ? (
 							<div className="text-red-500 dark:text-red-400 text-sm">Parse error. Check your markup syntax.</div>
 						) : (
-							<Renderer nodes={nodes} />
+							<Renderer
+								nodes={nodes}
+								registry={registry}
+								meta={meta}
+								renderProse={(text, key) => {
+									if (!text.trim()) return null
+									return (
+										<div key={key} className="leading-relaxed [&>*]:mb-2">
+											<SimpleMarkdown content={text} dataKey={key} />
+										</div>
+									)
+								}}
+							/>
 						)}
 					</div>
 				</div>

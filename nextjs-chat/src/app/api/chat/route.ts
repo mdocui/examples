@@ -1,8 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import OpenAI from 'openai'
 import { z } from 'zod'
-import { ComponentRegistry, generatePrompt } from '@mdocui/core'
-import { allDefinitions, defaultGroups } from '../../mdoc-registry'
+import { ComponentRegistry, generatePrompt, allDefinitions, defaultGroups } from '@mdocui/core'
 
 const registry = new ComponentRegistry()
 registry.registerAll(allDefinitions)
@@ -12,7 +11,7 @@ const systemPrompt = generatePrompt(registry, {
 		'You are an e-commerce analytics assistant for ShopMetrics. You help store owners understand their sales, customers, inventory, and marketing performance. Use realistic but fictional data.',
 	groups: defaultGroups,
 	additionalRules: [
-		'ALWAYS use stat inside grid cols=3 or cols=4 for KPI dashboards — never show stats without grid',
+		'CRITICAL: ALWAYS wrap stat components inside a grid — never render stat without a grid parent. Use grid cols=3 or cols=4 for KPI dashboards',
 		'ALWAYS use card to wrap related sections — charts, tables, stat grids should be inside cards',
 		'ALWAYS use chart with type="bar" or type="line" for trends — include meaningful labels and values',
 		'Use table with headers and rows for product lists, order details, inventory — always inside a card',
