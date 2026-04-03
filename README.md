@@ -12,6 +12,10 @@
 
 Example apps demonstrating [mdocUI](https://github.com/mdocui/mdocui) — generative UI for LLMs using Markdoc `{% %}` tag syntax.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mdocui/.github/main/assets/demo.gif" alt="mdocUI demo — streaming dashboard with charts, stats, and tables" width="800">
+</p>
+
 ## Examples
 
 | Example | Stack | Description |
