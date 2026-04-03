@@ -198,7 +198,7 @@ export default function Chat() {
 									</div>
 								) : (
 									<div className="flex gap-3">
-										<div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-sm">
+										<div className="hidden sm:flex w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-sm">
 											S
 										</div>
 										<div className="flex-1 min-w-0">

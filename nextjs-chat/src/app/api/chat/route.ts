@@ -10,24 +10,36 @@ function buildSystemPrompt() {
 	const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 	return generatePrompt(registry, {
 	preamble:
-		`You are an e-commerce analytics assistant for ShopMetrics. You help store owners understand their sales, customers, inventory, and marketing performance.\n\nToday is ${today}. Generate fresh, varied, realistic fictional data for every response — never repeat the same numbers. Vary product names, revenue figures, growth percentages, and trends across conversations.`,
+		`You are ShopMetrics, an e-commerce analytics assistant. Today is ${today}.
+
+<output_contract>
+Every response MUST contain ALL of the following sections in this order:
+1. One-line summary sentence (plain text)
+2. One or more cards with COMPLETE content inside (stats, charts, tables, or prose — NEVER empty cards)
+3. Two to three follow-up buttons at the end
+</output_contract>
+
+<completeness_contract>
+NEVER render an empty component. Every card MUST have content inside it. Every table MUST have rows of data. Every chart MUST have labels and values arrays with real numbers. Every tab MUST have content inside it. If you open a tag, you MUST fill it with data before closing it.
+</completeness_contract>
+
+NEVER use HTML tags (<div>, <p>, <b>, <span>, <img>). Use ONLY markdown (**, ##, -, etc.) and {% %} Markdoc tags.
+
+Generate fresh, varied, realistic fictional data for every response. Vary product names, revenue figures, growth percentages, and trends.`,
 	groups: defaultGroups,
 	additionalRules: [
-		'CRITICAL: ALWAYS wrap stat components inside a grid — never render stat without a grid parent. Use grid cols=3 or cols=4 for KPI dashboards',
-		'ALWAYS use card to wrap related sections — charts, tables, stat grids should be inside cards',
-		'ALWAYS use chart with type="bar" or type="line" for trends — include meaningful labels and values',
-		'Use table with headers and rows for product lists, order details, inventory — always inside a card',
-		'Use callout type="warning" for alerts (low stock, churn), type="success" for positive highlights',
-		'Use accordion to hide detailed breakdowns — users expand what they need',
-		'Use tabs with tab children for multi-view data — by channel, by region, by time period',
-		'For product browsing/shopping queries ("show me shoes", "find laptops under $500"), render products as cards in a grid cols=3. Each card has NO title prop. Inside each card put: image tag, then prose with **Product Name** on its own line, then price and rating on same line like "**$149.99** · 4.8★ · {% badge label="In Stock" variant="success" /%}", then a short one-line description, then a button with the product name in the label like "View CloudRunner Pro" (NEVER just "View Details" — the label is sent as the follow-up message so it must identify the product). Use placeholder images: https://placehold.co/300x200/EBF4FF/3B82F6?text=ProductName (replace spaces with +). Do NOT use stat for price — stat is for KPI dashboards only.',
-		'For product detail queries ("tell me about X", "details on Y"), show a single card with: large image, product name in prose as heading, price/rating/stock as bold prose, detailed description paragraph, and action buttons (Add to Cart, Compare). Do NOT use stat for price.',
-		'For analytics/reporting, use table with headers and rows for product lists, order details, inventory — always inside a card',
-		'Nest components richly: card > grid > stat, card > chart, card > table, tabs > tab > card > chart',
-		'End every response with 2-3 actionable follow-up buttons using action="continue"',
-		'Lead with a one-line summary, then show rich components, then follow-up buttons',
-		'Use progress bars for goals/targets (e.g. monthly revenue target 75% complete)',
-		'Use badge for status labels (e.g. badge label="In Stock" variant="success")',
+		'RULE 0 (ABSOLUTE): NEVER output HTML tags. No <div>, <p>, <b>, <span>, <img>, or any HTML. Use ONLY markdown syntax (**, ##, -, etc.) and {% %} Markdoc tags. HTML tags will break the renderer.',
+		'RULE 1: Every component MUST contain real data inside it. NEVER output a card, tab, or table with no content. A card with only a title and no body is FORBIDDEN.',
+		'RULE 2: ALWAYS wrap stat components inside a grid parent. Use grid cols=3 or cols=4 for stat dashboards.',
+		'RULE 3: ALWAYS use card to wrap related sections. Charts, tables, and stat grids go inside cards.',
+		'RULE 4: chart MUST include type, labels array, and values array with numeric data.',
+		'RULE 5: table MUST include headers array and rows array with actual data rows.',
+		'RULE 6: tabs MUST contain tab children, and each tab MUST contain content (cards, charts, tables, or prose).',
+		'Use callout type="warning" for alerts, type="success" for positive highlights.',
+		'Use accordion to hide detailed breakdowns.',
+		'For product browsing queries, render products as cards in a grid cols=3. Each card contains: image tag, bold product name, price and rating line, short description, and a button with the product name in the label.',
+		'End every response with 2-3 buttons using action="continue".',
+		'Use progress for goals/targets. Use badge for status labels.',
 	],
 	examples: [
 		`Here's your store dashboard for today:
@@ -125,16 +137,20 @@ export async function POST(req: Request) {
 	if (!result.success) return new Response('Invalid request', { status: 400 })
 	const { messages } = result.data
 
-	if (process.env.ANTHROPIC_API_KEY) {
-		return streamAnthropic(messages)
+	const noKeyMessage = 'This is a live demo without an API key.\n\nTry the [Playground](/playground) to experiment with mdocUI tags, or clone the [example repo](https://github.com/mdocui/examples) locally to see it in action with your own API key.'
+
+	try {
+		if (process.env.ANTHROPIC_API_KEY) {
+			return await streamAnthropic(messages)
+		}
+		if (process.env.OPENAI_API_KEY) {
+			return await streamOpenAI(messages)
+		}
+	} catch (err) {
+		console.error('[chat] API error:', err)
+		return Response.json({ error: noKeyMessage }, { status: 503 })
 	}
-	if (process.env.OPENAI_API_KEY) {
-		return streamOpenAI(messages)
-	}
-	return Response.json(
-		{ error: 'AI service is not configured. Please contact the administrator.' },
-		{ status: 503 },
-	)
+	return Response.json({ error: noKeyMessage }, { status: 503 })
 }
 
 async function streamAnthropic(messages: ChatMessage[]) {
@@ -170,19 +186,23 @@ async function streamAnthropic(messages: ChatMessage[]) {
 async function streamOpenAI(messages: ChatMessage[]) {
 	const client = new OpenAI()
 
-	const stream = await client.chat.completions.create({
-		model: 'gpt-4o-mini',
-		max_tokens: 4096,
+	const input = messages.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }))
+
+	const stream = await client.responses.create({
+		model: 'gpt-5.4-nano',
+		instructions: buildSystemPrompt(),
+		max_output_tokens: 4096,
 		stream: true,
-		messages: [{ role: 'system', content: buildSystemPrompt() }, ...messages],
+		input,
 	})
 
 	const encoder = new TextEncoder()
 	const readable = new ReadableStream({
 		async start(controller) {
-			for await (const chunk of stream) {
-				const text = chunk.choices[0]?.delta?.content
-				if (text) controller.enqueue(encoder.encode(text))
+			for await (const event of stream) {
+				if (event.type === 'response.output_text.delta') {
+					controller.enqueue(encoder.encode(event.delta))
+				}
 			}
 			controller.close()
 		},

@@ -192,6 +192,22 @@ export default function Home() {
 			</section>
 			</div>
 
+			{/* Demo GIF */}
+			<section className="px-6 py-20 max-w-4xl mx-auto">
+				<h2 className="text-2xl font-bold text-center mb-4">See it in action</h2>
+				<p className="text-zinc-500 dark:text-zinc-400 text-center mb-10 max-w-xl mx-auto">An LLM streams a full analytics dashboard — stats, charts, tables, and action buttons — all in real-time.</p>
+				<div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-lg">
+					<img
+						src="https://raw.githubusercontent.com/mdocui/.github/main/assets/demo.gif"
+						alt="mdocUI demo — LLM streaming a dashboard with stats, charts, tables, and action buttons in real-time"
+						className="w-full"
+						width={1200}
+						height={676}
+						loading="lazy"
+					/>
+				</div>
+			</section>
+
 			{/* Code Example */}
 			<section className="px-6 py-20 max-w-5xl mx-auto">
 				<h2 className="text-2xl font-bold text-center mb-12">What the LLM writes</h2>
@@ -325,6 +341,53 @@ export default function Home() {
 						<h3 className="text-base font-semibold mt-2">v1.0.0</h3>
 						<p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Stable API, frozen component props, CHANGELOG</p>
 					</div>
+				</div>
+			</section>
+
+			{/* FAQ */}
+			<section className="px-6 py-20 max-w-3xl mx-auto">
+				<h2 className="text-2xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+				<div className="space-y-6">
+					{[
+						{
+							q: 'What is mdocUI?',
+							a: 'mdocUI is an open-source library that lets LLMs write interactive UI components (charts, tables, forms, buttons) inline with markdown using Markdoc {% %} tag syntax. Everything streams in real-time.',
+						},
+						{
+							q: 'Which LLM providers does it work with?',
+							a: 'Any provider that streams text — OpenAI, Anthropic, Google, Mistral, local models, or any custom API. mdocUI parses the output, it doesn\'t care where it comes from.',
+						},
+						{
+							q: 'Do I need to train the model on the syntax?',
+							a: 'No. Markdoc {% %} syntax is already in most LLM training data (Stripe docs, Cloudflare docs). Just include the auto-generated system prompt from generatePrompt() and models write it correctly.',
+						},
+						{
+							q: 'Can I use my own components?',
+							a: 'Yes. Pass a components prop to the Renderer with your own React components (shadcn, Radix, custom). You can override any of the 24 built-in components or add new ones.',
+						},
+						{
+							q: 'Is it production ready?',
+							a: 'mdocUI is in alpha (0.6.x). The core API is stabilizing but may change between minor versions. We follow semver and will freeze the API at v1.0.',
+						},
+						{
+							q: 'How does streaming work?',
+							a: 'The parser processes tokens character-by-character using a state machine. As soon as {% is detected, it switches from prose mode to tag mode. No buffering, no regex, no lookahead — components appear the moment the closing tag arrives.',
+						},
+						{
+							q: 'What frameworks are supported?',
+							a: '@mdocui/core is framework-agnostic. @mdocui/react is the first renderer. Vue and Svelte renderers are on the roadmap.',
+						},
+					].map((faq) => (
+						<details key={faq.q} className="group border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
+							<summary className="flex items-center justify-between px-6 py-4 cursor-pointer text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+								{faq.q}
+								<span className="text-zinc-400 group-open:rotate-45 transition-transform text-lg ml-4">+</span>
+							</summary>
+							<div className="px-6 pb-4 text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+								{faq.a}
+							</div>
+						</details>
+					))}
 				</div>
 			</section>
 

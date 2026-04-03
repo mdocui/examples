@@ -482,6 +482,16 @@
   animation: mdocui-shimmer 1.5s ease-in-out infinite;
 }
 
+/* ─── Prose links (rendered by SimpleMarkdown) ─── */
+[data-mdocui-prose] a {
+  color: #3b82f6 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
+[data-mdocui-prose] a:hover {
+  color: #2563eb !important;
+}
+
 /* ─── Smooth message entry ─── */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
