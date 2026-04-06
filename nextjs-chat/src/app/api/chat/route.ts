@@ -146,7 +146,7 @@ export async function POST(req: Request) {
 		if (process.env.OPENAI_API_KEY) {
 			return await streamOpenAI(messages)
 		}
-		return Response.json({ error: 'No API key configured. Set ANTHROPIC_API_KEY or OPENAI_API_KEY.' }, { status: 503 })
+		return Response.json({ error: 'This is a live demo — no API key is configured on this deployment.\n\nClone the [example repo](https://github.com/mdocui/examples) and add your own `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to run it locally, or [sponsor the project](https://github.com/sponsors/pnutmath) to support development.' }, { status: 503 })
 	} catch (err) {
 		console.error('[chat] API error:', err)
 		return Response.json({ error: 'API request failed. Check your API key and try again.' }, { status: 503 })
