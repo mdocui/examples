@@ -2,9 +2,9 @@
 
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
 import { StreamingParser } from '@mdocui/core'
-import { Renderer, createDefaultRegistry, SimpleMarkdown } from '@mdocui/react'
+import { Renderer } from '@mdocui/react'
+import { registry, renderProse } from '@/lib/mdocui'
 
-const registry = createDefaultRegistry()
 const knownTags = registry.knownTags()
 
 const defaultMarkup = `## Store Dashboard — March 2026
@@ -138,14 +138,7 @@ export default function Playground() {
 								nodes={nodes}
 								registry={registry}
 								meta={meta}
-								renderProse={(text, key) => {
-									if (!text.trim()) return null
-									return (
-										<div key={key} className="leading-relaxed [&>*]:mb-2">
-											<SimpleMarkdown content={text} dataKey={key} />
-										</div>
-									)
-								}}
+								renderProse={renderProse}
 							/>
 						)}
 					</div>

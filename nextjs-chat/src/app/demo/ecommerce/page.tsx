@@ -1,7 +1,10 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { ActionEvent } from '@mdocui/core'
+import { useRenderer, Renderer, defaultComponents } from '@mdocui/react'
 import { MdocMessage } from '../../mdoc-message'
+import { registry, rendererClassNames, renderProse } from '@/lib/mdocui'
 
 interface Message {
 	id: string
@@ -18,40 +21,74 @@ const suggestions = [
 ]
 
 export default function Chat() {
-	const [messages, setMessages] = useState<Message[]>([])
+	const [completedMessages, setCompletedMessages] = useState<Message[]>([])
 	const [input, setInput] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
+	// Stays true after done() — avoids unmount/remount blink between streaming and static view.
+	const [showPane, setShowPane] = useState(false)
 	const scrollRef = useRef<HTMLDivElement>(null)
-	const messagesRef = useRef<Message[]>([])
 	const inputRef = useRef<HTMLInputElement>(null)
 
+	// Accumulates the raw streaming text; snapshotted into completedMessages at the start of the next request.
+	const contentRef = useRef('')
+	const isLoadingRef = useRef(false)
+	const completedMessagesRef = useRef<Message[]>([])
 	useEffect(() => {
-		messagesRef.current = messages
-	}, [messages])
+		completedMessagesRef.current = completedMessages
+	}, [completedMessages])
 
-	const scrollToBottom = () => {
-		setTimeout(() => {
-			scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-		}, 50)
-	}
+	const { nodes, meta, isStreaming, push, done, reset } = useRenderer({ registry })
+
+	// Auto-scroll: only follows if already within 120 px of the bottom.
+	const scrollRafRef = useRef<number | null>(null)
+	const scrollToBottom = useCallback((force = false) => {
+		if (scrollRafRef.current !== null) return
+		scrollRafRef.current = requestAnimationFrame(() => {
+			const el = scrollRef.current
+			if (el) {
+				const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
+				if (force || distanceFromBottom < 120) {
+					el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+				}
+			}
+			scrollRafRef.current = null
+		})
+	}, [])
 
 	const sendMessage = useCallback(
 		async (content: string) => {
+			if (!content.trim() || isLoadingRef.current) return
+
 			const userMsg: Message = { id: crypto.randomUUID(), role: 'user', content }
-			const assistantMsg: Message = { id: crypto.randomUUID(), role: 'assistant', content: '' }
 
-			setMessages((prev) => [...prev, userMsg, assistantMsg])
+			// Snapshot previous response + add user message + reset — one render batch, no blink.
+			const previousContent = contentRef.current
+			reset()
+			contentRef.current = ''
+			setCompletedMessages((prev) => {
+				const next = [...prev]
+				if (previousContent) {
+					next.push({ id: crypto.randomUUID(), role: 'assistant', content: previousContent })
+				}
+				next.push(userMsg)
+				return next
+			})
+
+			isLoadingRef.current = true
 			setInput('')
+			setShowPane(true)
 			setIsLoading(true)
-			scrollToBottom()
+			scrollToBottom(true)
 
-			const allMessages = [...messagesRef.current, userMsg].map(({ role, content }) => ({ role, content }))
+			const apiMessages = [...completedMessagesRef.current, userMsg].map(
+				({ role, content }) => ({ role, content }),
+			)
 
 			try {
 				const res = await fetch('/api/chat', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ messages: allMessages }),
+					body: JSON.stringify({ messages: apiMessages }),
 				})
 
 				if (!res.ok) {
@@ -62,31 +99,33 @@ export default function Chat() {
 
 				const reader = res.body.getReader()
 				const decoder = new TextDecoder()
-				let accumulated = ''
 
 				while (true) {
-					const { done, value } = await reader.read()
-					if (done) break
-					accumulated += decoder.decode(value, { stream: true })
-					const current = accumulated
-					setMessages((prev) =>
-						prev.map((m) => (m.id === assistantMsg.id ? { ...m, content: current } : m)),
-					)
+					const { done: streamDone, value } = await reader.read()
+					if (streamDone) break
+					const chunk = decoder.decode(value, { stream: true })
+					contentRef.current += chunk
+					push(chunk)
 					scrollToBottom()
 				}
+
+				done()
 			} catch (err) {
-				const errorMessage = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
-				setMessages((prev) =>
-					prev.map((m) =>
-						m.id === assistantMsg.id ? { ...m, content: `**Error:** ${errorMessage}` } : m,
-					),
-				)
+				done()
+				const msg = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
+				setCompletedMessages((prev) => [
+					...prev,
+					{ id: crypto.randomUUID(), role: 'assistant', content: `**Error:** ${msg}` },
+				])
+				setShowPane(false)
+				contentRef.current = ''
 			}
 
+			isLoadingRef.current = false
 			setIsLoading(false)
 			inputRef.current?.focus()
 		},
-		[],
+		[push, done, reset, scrollToBottom],
 	)
 
 	const handleSubmit = (e: React.FormEvent) => {
@@ -96,7 +135,7 @@ export default function Chat() {
 	}
 
 	const handleAction = useCallback(
-		(event: { action: string; label?: string; formState?: Record<string, unknown>; params?: Record<string, unknown> }) => {
+		(event: ActionEvent) => {
 			if (event.action === 'continue' && event.label) {
 				sendMessage(event.label)
 			} else if (event.action.startsWith('submit:') && event.formState) {
@@ -111,7 +150,17 @@ export default function Chat() {
 		[sendMessage],
 	)
 
-	const isEmpty = messages.length === 0
+	const handleNewChat = useCallback(() => {
+		reset()
+		contentRef.current = ''
+		isLoadingRef.current = false
+		setCompletedMessages([])
+		setInput('')
+		setIsLoading(false)
+		setShowPane(false)
+	}, [reset])
+
+	const isEmpty = completedMessages.length === 0 && !showPane
 
 	return (
 		<div className="h-[calc(100vh-3.5rem)] flex flex-col bg-zinc-50 dark:bg-zinc-950">
@@ -131,21 +180,26 @@ export default function Chat() {
 						{!isEmpty && (
 							<button
 								type="button"
-								onClick={() => { setMessages([]); setInput(''); setIsLoading(false) }}
+								onClick={handleNewChat}
 								className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
 							>
-								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
 									<path d="M12 20h9" />
 									<path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.855z" />
 								</svg>
 								New chat
 							</button>
 						)}
-						<a
-							href="https://github.com/mdocui/mdocui"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
+						<a href="https://github.com/mdocui/mdocui" target="_blank" rel="noopener noreferrer">
 							<img
 								src="https://img.shields.io/github/stars/mdocui/mdocui?style=social"
 								alt="GitHub stars"
@@ -179,49 +233,50 @@ export default function Chat() {
 								Welcome to ShopMetrics
 							</h2>
 							<p className="text-zinc-500 dark:text-zinc-500 text-sm max-w-md">
-								Ask me anything about your store — revenue, products, customers, inventory. I'll respond with rich interactive dashboards.
+								Ask me anything about your store — revenue, products, customers, inventory. I'll
+								respond with rich interactive dashboards.
 							</p>
 						</div>
 					)}
 
-					{messages.map((msg) => {
-						const isLast = msg.id === messages[messages.length - 1]?.id
-						const isStreamingThis = isLoading && isLast
-
-						return (
-							<div key={msg.id} className="animate-in fade-in">
-								{msg.role === 'user' ? (
-									<div className="flex justify-end">
-										<div className="max-w-[85%] px-4 py-3 rounded-2xl rounded-br-md bg-blue-600 text-white text-sm leading-relaxed shadow-sm">
-											{msg.content}
-										</div>
+					{completedMessages.map((msg) => (
+						<div key={msg.id} className="animate-in fade-in">
+							{msg.role === 'user' ? (
+								<div className="flex justify-end">
+									<div className="max-w-[85%] px-4 py-3 rounded-2xl rounded-br-md bg-blue-600 text-white text-sm leading-relaxed shadow-sm">
+										{msg.content}
 									</div>
-								) : (
-									<div className="flex gap-3">
-										<div className="hidden sm:flex w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-sm">
-											S
-										</div>
-										<div className="flex-1 min-w-0">
-											<div className="rounded-2xl rounded-tl-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 shadow-sm">
-												<MdocMessage
-													content={msg.content}
-													isStreaming={isStreamingThis}
-													onAction={handleAction}
-												/>
-												{isStreamingThis && (
-													<div className="flex items-center gap-1.5 pt-3 mt-2 border-t border-zinc-100 dark:border-zinc-800">
-														<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-														<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse [animation-delay:150ms]" />
-														<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse [animation-delay:300ms]" />
-													</div>
-												)}
-											</div>
-										</div>
+								</div>
+							) : (
+								<AssistantBubble>
+									<MdocMessage content={msg.content} onAction={handleAction} />
+								</AssistantBubble>
+							)}
+						</div>
+					))}
+
+					{showPane && (
+						<div className="animate-in fade-in">
+							<AssistantBubble>
+								<Renderer
+									nodes={nodes}
+									meta={meta}
+									components={defaultComponents}
+									isStreaming={isStreaming}
+									onAction={handleAction}
+									classNames={rendererClassNames}
+									renderProse={renderProse}
+								/>
+								{isLoading && !isStreaming && nodes.length === 0 && (
+									<div className="flex items-center gap-1.5 py-1">
+										<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+										<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse [animation-delay:150ms]" />
+										<span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse [animation-delay:300ms]" />
 									</div>
 								)}
-							</div>
-						)
-					})}
+							</AssistantBubble>
+						</div>
+					)}
 				</div>
 			</div>
 
@@ -262,7 +317,16 @@ export default function Chat() {
 							disabled={isLoading || !input.trim()}
 							className="p-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
 						>
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+							<svg
+								width="18"
+								height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
 								<line x1="22" y1="2" x2="11" y2="13" />
 								<polygon points="22 2 15 22 11 13 2 9 22 2" />
 							</svg>
@@ -270,18 +334,48 @@ export default function Chat() {
 					</form>
 					<p className="text-center text-[10px] text-zinc-400 dark:text-zinc-600 pb-2">
 						Powered by{' '}
-						<a href="https://github.com/mdocui/mdocui" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">
+						<a
+							href="https://github.com/mdocui/mdocui"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="underline hover:text-zinc-600 dark:hover:text-zinc-300"
+						>
 							mdocUI
 						</a>
-						{' '}&middot;{' '}
-						<a href="https://mdocui.github.io" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">
+						{' · '}
+						<a
+							href="https://mdocui.github.io"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="underline hover:text-zinc-600 dark:hover:text-zinc-300"
+						>
 							Documentation
 						</a>
-						{' '}&middot;{' '}
-						<a href="https://www.npmjs.com/org/mdocui" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">
+						{' · '}
+						<a
+							href="https://www.npmjs.com/org/mdocui"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="underline hover:text-zinc-600 dark:hover:text-zinc-300"
+						>
 							npm
 						</a>
 					</p>
+				</div>
+			</div>
+		</div>
+	)
+}
+
+function AssistantBubble({ children }: { children: React.ReactNode }) {
+	return (
+		<div className="flex gap-3">
+			<div className="hidden sm:flex w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-sm">
+				S
+			</div>
+			<div className="flex-1 min-w-0">
+				<div className="rounded-2xl rounded-tl-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 shadow-sm">
+					{children}
 				</div>
 			</div>
 		</div>

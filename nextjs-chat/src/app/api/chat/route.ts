@@ -35,6 +35,8 @@ Generate fresh, varied, realistic fictional data for every response. Vary produc
 		'RULE 4: chart MUST include type, labels array, and values array with numeric data.',
 		'RULE 5: table MUST include headers array and rows array with actual data rows.',
 		'RULE 6: tabs MUST contain tab children, and each tab MUST contain content (cards, charts, tables, or prose).',
+		'For stat trend: use trend="up" for growth, trend="down" for decline, trend="stable" for flat/no significant change. Never use "neutral" or "flat" — "stable" is the correct value.',
+		'Buttons can carry extra context props beyond action and label. Example: {% button action="continue" label="View by region" metric="revenue" period="Q4" /%} — the extra props are passed through to the action handler.',
 		'Use callout type="warning" for alerts, type="success" for positive highlights.',
 		'Use accordion to hide detailed breakdowns.',
 		'For product browsing queries, render products as cards in a grid cols=3. Each card contains: image tag, bold product name, price and rating line, short description, and a button with the product name in the label.',
@@ -137,8 +139,6 @@ export async function POST(req: Request) {
 	if (!result.success) return new Response('Invalid request', { status: 400 })
 	const { messages } = result.data
 
-	const noKeyMessage = 'This is a live demo without an API key.\n\nTry the [Playground](/playground) to experiment with mdocUI tags, or clone the [example repo](https://github.com/mdocui/examples) locally to see it in action with your own API key.'
-
 	try {
 		if (process.env.ANTHROPIC_API_KEY) {
 			return await streamAnthropic(messages)
@@ -146,11 +146,11 @@ export async function POST(req: Request) {
 		if (process.env.OPENAI_API_KEY) {
 			return await streamOpenAI(messages)
 		}
+		return Response.json({ error: 'No API key configured. Set ANTHROPIC_API_KEY or OPENAI_API_KEY.' }, { status: 503 })
 	} catch (err) {
 		console.error('[chat] API error:', err)
-		return Response.json({ error: noKeyMessage }, { status: 503 })
+		return Response.json({ error: 'API request failed. Check your API key and try again.' }, { status: 503 })
 	}
-	return Response.json({ error: noKeyMessage }, { status: 503 })
 }
 
 async function streamAnthropic(messages: ChatMessage[]) {
