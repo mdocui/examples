@@ -1,4 +1,4 @@
-# mdocUI — Implementation Skill for AI Agents
+# mdocUI: Implementation Skill for AI Agents
 
 > This file teaches AI coding agents (Claude Code, Cursor, Copilot, etc.) how to implement with mdocUI.
 > Install in Claude Code: copy this file to your project's `.claude/` directory or reference it in CLAUDE.md.
@@ -8,9 +8,9 @@
 mdocUI is a generative UI library for LLMs. It uses Markdoc `{% %}` tag syntax inline with markdown prose. The LLM writes natural markdown AND drops interactive UI components in the same stream.
 
 **npm packages:**
-- `@mdocui/core` — streaming parser, component registry, prompt generator
-- `@mdocui/react` — React renderer, 24 theme-neutral components
-- `@mdocui/cli` — scaffold, generate system prompts, preview
+- `@mdocui/core`: streaming parser, component registry, prompt generator
+- `@mdocui/react`: React renderer, 24 theme-neutral components
+- `@mdocui/cli`: scaffold, generate system prompts, preview
 
 ## Installation
 
@@ -164,36 +164,36 @@ interface RendererProps {
 ## Available Components (24)
 
 ### Layout
-- `stack` — flex container (direction, gap, align)
-- `grid` — CSS grid (cols, gap)
-- `card` — bordered container (title, variant)
-- `divider` — horizontal line
-- `accordion` — collapsible section (title, open)
-- `tabs` — tabbed container (labels, active) — children: tab only
-- `tab` — tab panel (label)
+- `stack`: flex container (direction, gap, align)
+- `grid`: CSS grid (cols, gap)
+- `card`: bordered container (title, variant)
+- `divider`: horizontal line
+- `accordion`: collapsible section (title, open)
+- `tabs`: tabbed container (labels, active). Children: tab only
+- `tab`: tab panel (label)
 
 ### Interactive
-- `button` — action button (action, label, variant) — disables after click
-- `button-group` — button row (direction) — children: button only
-- `input` — text field (name, label, placeholder, type)
-- `textarea` — multi-line input (name, label, placeholder, rows)
-- `select` — dropdown (name, label, options, placeholder)
-- `checkbox` — toggle (name, label, checked)
-- `toggle` — switch (name, label, checked)
-- `form` — form container (name) — children: input, textarea, select, checkbox, toggle, button
+- `button`: action button (action, label, variant). Disables after click
+- `button-group`: button row (direction). Children: button only
+- `input`: text field (name, label, placeholder, type)
+- `textarea`: multi-line input (name, label, placeholder, rows)
+- `select`: dropdown (name, label, options, placeholder)
+- `checkbox`: toggle (name, label, checked)
+- `toggle`: switch (name, label, checked)
+- `form`: form container (name). Children: input, textarea, select, checkbox, toggle, button
 
 ### Data
-- `chart` — visualization (type: bar|line|pie|donut, labels, values, title)
-- `table` — data table (headers, rows, caption)
-- `stat` — metric display (label, value, change, trend: up|down|neutral)
-- `progress` — progress bar (value, label, max)
+- `chart`: visualization (type: bar|line|pie|donut, labels, values, title)
+- `table`: data table (headers, rows, caption)
+- `stat`: metric display (label, value, change, trend: up|down|neutral)
+- `progress`: progress bar (value, label, max)
 
 ### Content
-- `callout` — alert block (type: info|warning|error|success, title)
-- `badge` — inline tag (label, variant)
-- `image` — image (src, alt, width, height)
-- `code-block` — code block (code, language, title)
-- `link` — clickable link (action, label, url)
+- `callout`: alert block (type: info|warning|error|success, title)
+- `badge`: inline tag (label, variant)
+- `image`: image (src, alt, width, height)
+- `code-block`: code block (code, language, title)
+- `link`: clickable link (action, label, url)
 
 ## Composition Patterns
 
@@ -250,7 +250,7 @@ const systemPrompt = generatePrompt(registry, { preamble: '...', groups: default
 export async function POST(req: Request) {
   const { messages } = await req.json()
   // Pass systemPrompt as system message to any LLM
-  // Stream response as text/plain — the client parser handles the rest
+  // Stream response as text/plain: the client parser handles the rest
 }
 ```
 
@@ -299,7 +299,7 @@ Lightweight mesh with responsive cushioning.
 {% /grid %}
 ```
 
-Use prose for price/rating (not `stat` — it renders too large for product cards). Include the product name in button labels so follow-up messages have context.
+Use prose for price/rating (not `stat`: it renders too large for product cards). Include the product name in button labels so follow-up messages have context.
 
 ### Styling via CSS data attributes
 
@@ -327,7 +327,7 @@ The built-in shimmer flickers during streaming because `pendingTag` toggles rapi
 - **Inline**: bold (`**`), italic (`*`), bold+italic (`***`), strikethrough (`~~`), inline code, links
 - **Block**: headings (h1-h3), unordered lists (`-`/`*`), ordered lists (`1.`/`1)`), paragraphs
 
-Headings and lists are detected line-by-line — no blank line separation required.
+Headings and lists are detected line-by-line: no blank line separation required.
 
 Override with a full markdown renderer if you need GFM tables, images, or nested lists:
 
@@ -348,12 +348,12 @@ renderProse={(text, key) => {
 
 ## Key Principles
 
-1. **LLM generates structure, client handles styling** — never put colors in the system prompt
-2. **Prose + components in one stream** — markdown flows naturally, {% %} tags add interactivity
-3. **Single source of truth** — Zod schemas drive both validation AND prompt generation
-4. **Theme-neutral defaults** — components use currentColor/inherit, app decides colors via classNames
-5. **One-shot interactions** — buttons disable after click, forms lock after submit
-6. **Consecutive buttons auto-group inline** — no layout work needed
+1. **LLM generates structure, client handles styling**: never put colors in the system prompt
+2. **Prose + components in one stream**: markdown flows naturally, {% %} tags add interactivity
+3. **Single source of truth**: Zod schemas drive both validation AND prompt generation
+4. **Theme-neutral defaults**: components use currentColor/inherit, app decides colors via classNames
+5. **One-shot interactions**: buttons disable after click, forms lock after submit
+6. **Consecutive buttons auto-group inline**: no layout work needed
 
 ## Links
 

@@ -10,10 +10,10 @@
 
 # mdocUI Examples
 
-Example apps demonstrating [mdocUI](https://github.com/mdocui/mdocui) — generative UI for LLMs using Markdoc `{% %}` tag syntax.
+Example apps demonstrating [mdocUI](https://github.com/mdocui/mdocui): generative UI for LLMs using Markdoc `{% %}` tag syntax.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mdocui/.github/main/assets/demo.gif" alt="mdocUI demo — streaming dashboard with charts, stats, and tables" width="800">
+  <img src="https://raw.githubusercontent.com/mdocui/.github/main/assets/demo.gif" alt="mdocUI demo: streaming dashboard with charts, stats, and tables" width="800">
 </p>
 
 ## Examples
@@ -40,9 +40,9 @@ Visit `/playground` in the running app to experiment with mdocUI tags interactiv
 
 ### Latest features (v0.6.4)
 
-- **Shimmer placeholders** — animated loading state while components stream in (`ComponentShimmer` or custom `renderPendingComponent`)
-- **`contextData`** — pass arbitrary app data to components via the Renderer prop
-- **Verbosity prompt modes** — `generatePrompt(registry, { verbosity: 'minimal' | 'default' | 'detailed' })` controls system prompt size
+- **Shimmer placeholders**: animated loading state while components stream in (`ComponentShimmer` or custom `renderPendingComponent`)
+- **`contextData`**: pass arbitrary app data to components via the Renderer prop
+- **Verbosity prompt modes**: `generatePrompt(registry, { verbosity: 'minimal' | 'default' | 'detailed' })` controls system prompt size
 
 ## Links
 

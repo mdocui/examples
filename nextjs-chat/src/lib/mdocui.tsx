@@ -1,15 +1,16 @@
 'use client'
 
 /**
- * Shared mdocUI primitives — registry, classNames, prose renderer.
+ * Shared mdocUI primitives: registry, classNames, prose renderer.
  * Import from here so every part of the app uses the same configuration.
  */
 
 import { ComponentRegistry, allDefinitions } from '@mdocui/core'
 import { SimpleMarkdown } from '@mdocui/react'
+import type { ComponentErrorEvent } from '@mdocui/react'
 
 // ── Registry ────────────────────────────────────────────────────────────────
-// coerce: true — LLM-friendly mode.
+// coerce: true turns on LLM-friendly mode.
 // When strict Zod validation fails (e.g. LLM sends "Up" instead of "up"),
 // the registry falls back to raw props instead of dropping the component.
 export const registry = new ComponentRegistry({ coerce: true })
@@ -34,4 +35,13 @@ export function renderProse(text: string, key: string) {
 			<SimpleMarkdown content={text} dataKey={key} />
 		</div>
 	)
+}
+
+// ── Component errors ────────────────────────────────────────────────────────
+// A component that throws is caught per-component, so the rest of the message
+// still renders. In production this is where you would report to Sentry or
+// similar; the props are included because a model sending an unexpected shape
+// is the usual cause.
+export function handleComponentError({ componentName, error, props }: ComponentErrorEvent) {
+	console.error(`[mdocui] <${componentName}> failed to render:`, error.message, props)
 }

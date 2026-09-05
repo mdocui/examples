@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ActionEvent } from '@mdocui/core'
 import { useRenderer, Renderer, defaultComponents } from '@mdocui/react'
 import { MdocMessage } from '../../mdoc-message'
-import { registry, rendererClassNames, renderProse } from '@/lib/mdocui'
+import { handleComponentError, registry, rendererClassNames, renderProse } from '@/lib/mdocui'
 
 interface Message {
 	id: string
@@ -24,7 +24,7 @@ export default function Chat() {
 	const [completedMessages, setCompletedMessages] = useState<Message[]>([])
 	const [input, setInput] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
-	// Stays true after done() — avoids unmount/remount blink between streaming and static view.
+	// Stays true after done(): avoids unmount/remount blink between streaming and static view.
 	const [showPane, setShowPane] = useState(false)
 	const scrollRef = useRef<HTMLDivElement>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
@@ -61,7 +61,7 @@ export default function Chat() {
 
 			const userMsg: Message = { id: crypto.randomUUID(), role: 'user', content }
 
-			// Snapshot previous response + add user message + reset — one render batch, no blink.
+			// Snapshot previous response + add user message + reset: one render batch, no blink.
 			const previousContent = contentRef.current
 			reset()
 			contentRef.current = ''
@@ -233,7 +233,7 @@ export default function Chat() {
 								Welcome to ShopMetrics
 							</h2>
 							<p className="text-zinc-500 dark:text-zinc-500 text-sm max-w-md">
-								Ask me anything about your store — revenue, products, customers, inventory. I'll
+								Ask me anything about your store: revenue, products, customers, inventory. I'll
 								respond with rich interactive dashboards.
 							</p>
 						</div>
@@ -264,6 +264,7 @@ export default function Chat() {
 									components={defaultComponents}
 									isStreaming={isStreaming}
 									onAction={handleAction}
+									onError={handleComponentError}
 									classNames={rendererClassNames}
 									renderProse={renderProse}
 								/>
