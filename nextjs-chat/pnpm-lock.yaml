@@ -12,14 +12,14 @@ importers:
         specifier: ^0.124.0
         version: 0.124.0(zod@4.5.4)
       '@mdocui/core':
-        specifier: ^0.8.0
-        version: 0.8.0
+        specifier: ^0.8.1
+        version: 0.8.1
       '@mdocui/react':
-        specifier: ^0.8.0
-        version: 0.8.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: ^0.8.1
+        version: 0.8.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@mdocui/web-components':
-        specifier: ^0.8.0
-        version: 0.8.0
+        specifier: ^0.8.1
+        version: 0.8.1
       next:
         specifier: ^16.3.4
         version: 16.3.4(@types/node@26.4.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -255,17 +255,17 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mdocui/core@0.8.0':
-    resolution: {integrity: sha512-dRMjJTWfsrhhrYFzMYsTe5xC2QTPfih28hOFW7MUoJ+FIktrfN/oAB09mlFkOs5ozgGEaUDDyUUNqO9XLeruZA==}
+  '@mdocui/core@0.8.1':
+    resolution: {integrity: sha512-+T7Y1RjM5JL5V8FIX5iXjLQTke1jEFFpfUvjgg2o+wvaw0w3IEAsmBAb7oO+K5Gr6nEKW2RYH1nue4ysF6RV+A==}
 
-  '@mdocui/react@0.8.0':
-    resolution: {integrity: sha512-1KYkXsyoF1po8cgRt8E3VQ0hJhGKSnrrGO/5BBiZecA3W3uRAg4OBsz/J9BFsa2D1CDbBfB8ix1w+oeULJCAYQ==}
+  '@mdocui/react@0.8.1':
+    resolution: {integrity: sha512-uDQuwo2VEuLmZOOmyjVgDsUkF5teir6iObOT14ZfVIy3io3mgj/R3V5OFTZ07V6f7q0gF/m/L0Fp39sSh4Pklg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@mdocui/web-components@0.8.0':
-    resolution: {integrity: sha512-NT7BLz8yxhc+EZ5ruu9/MBRQtl6e377pQfOt+rqW531XVWsByo3Ve3cvC/uuKmKUwT540FYpZ7Y+aSABrSsD7w==}
+  '@mdocui/web-components@0.8.1':
+    resolution: {integrity: sha512-5rniz7e3PTwQhxt1cxtndZ0pWccyq9Wx/uF9IQc/4iPeI5rzLlTEHxc/cCtFwGp7UaoqS2BRLYcImMRyKHpnrw==}
 
   '@next/env@16.3.4':
     resolution: {integrity: sha512-cjWZnUUa6jZq2kFaNe/ZyJdZonOZ/QoN0Zka2nz/FLOrfx14pQuM9c5RaSVkWMqgdt4ksgPAMWPyHSs/CyV48Q==}
@@ -819,19 +819,19 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@mdocui/core@0.8.0':
+  '@mdocui/core@0.8.1':
     dependencies:
       zod: 4.5.4
 
-  '@mdocui/react@0.8.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@mdocui/react@0.8.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@mdocui/core': 0.8.0
+      '@mdocui/core': 0.8.1
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  '@mdocui/web-components@0.8.0':
+  '@mdocui/web-components@0.8.1':
     dependencies:
-      '@mdocui/core': 0.8.0
+      '@mdocui/core': 0.8.1
 
   '@next/env@16.3.4': {}
 
