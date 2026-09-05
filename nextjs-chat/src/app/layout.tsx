@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 	description: 'LLMs write markdown and drop interactive UI components in the same stream: charts, buttons, forms, tables, cards.',
 	metadataBase: new URL(baseUrl),
 	alternates: { canonical: '/' },
+	verification: { google: '6MG3jeWbvae56OyIAsfZ-_NkA9-36jpv5v8IqBK-dLA' },
 	icons: { icon: '/favicon.ico', apple: '/favicon.png' },
 	openGraph: {
 		title: 'mdocUI: Generative UI for LLMs',
