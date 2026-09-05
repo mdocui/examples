@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ActionEvent } from '@mdocui/core'
 import { useRenderer, Renderer, defaultComponents } from '@mdocui/react'
 import { MdocMessage } from '../../mdoc-message'
-import { registry, rendererClassNames, renderProse } from '@/lib/mdocui'
+import { handleComponentError, registry, rendererClassNames, renderProse } from '@/lib/mdocui'
 
 interface Message {
 	id: string
@@ -264,6 +264,7 @@ export default function Chat() {
 									components={defaultComponents}
 									isStreaming={isStreaming}
 									onAction={handleAction}
+									onError={handleComponentError}
 									classNames={rendererClassNames}
 									renderProse={renderProse}
 								/>

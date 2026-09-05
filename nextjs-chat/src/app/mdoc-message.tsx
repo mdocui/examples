@@ -9,7 +9,7 @@ import { useMemo } from 'react'
 import { StreamingParser } from '@mdocui/core'
 import { Renderer, defaultComponents } from '@mdocui/react'
 import type { ActionEvent } from '@mdocui/core'
-import { registry, rendererClassNames, renderProse } from '@/lib/mdocui'
+import { handleComponentError, registry, rendererClassNames, renderProse } from '@/lib/mdocui'
 
 const knownTags = registry.knownTags()
 
@@ -32,6 +32,7 @@ export function MdocMessage({ content, onAction }: MdocMessageProps) {
 			components={defaultComponents}
 			isStreaming={false}
 			onAction={onAction}
+			onError={handleComponentError}
 			classNames={rendererClassNames}
 			renderPendingComponent={null}
 			renderProse={renderProse}
