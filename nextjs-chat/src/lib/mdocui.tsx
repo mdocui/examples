@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * Shared mdocUI primitives — registry, classNames, prose renderer.
+ * Shared mdocUI primitives: registry, classNames, prose renderer.
  * Import from here so every part of the app uses the same configuration.
  */
 
@@ -10,7 +10,7 @@ import { SimpleMarkdown } from '@mdocui/react'
 import type { ComponentErrorEvent } from '@mdocui/react'
 
 // ── Registry ────────────────────────────────────────────────────────────────
-// coerce: true — LLM-friendly mode.
+// coerce: true turns on LLM-friendly mode.
 // When strict Zod validation fails (e.g. LLM sends "Up" instead of "up"),
 // the registry falls back to raw props instead of dropping the component.
 export const registry = new ComponentRegistry({ coerce: true })

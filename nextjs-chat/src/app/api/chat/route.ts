@@ -15,7 +15,7 @@ function buildSystemPrompt() {
 <output_contract>
 Every response MUST contain ALL of the following sections in this order:
 1. One-line summary sentence (plain text)
-2. One or more cards with COMPLETE content inside (stats, charts, tables, or prose — NEVER empty cards)
+2. One or more cards with COMPLETE content inside (stats, charts, tables, or prose, never empty cards)
 3. Two to three follow-up buttons at the end
 </output_contract>
 
@@ -35,8 +35,8 @@ Generate fresh, varied, realistic fictional data for every response. Vary produc
 		'RULE 4: chart MUST include type, labels array, and values array with numeric data.',
 		'RULE 5: table MUST include headers array and rows array with actual data rows.',
 		'RULE 6: tabs MUST contain tab children, and each tab MUST contain content (cards, charts, tables, or prose).',
-		'For stat trend: use trend="up" for growth, trend="down" for decline, trend="stable" for flat/no significant change. Never use "neutral" or "flat" — "stable" is the correct value.',
-		'Buttons can carry extra context props beyond action and label. Example: {% button action="continue" label="View by region" metric="revenue" period="Q4" /%} — the extra props are passed through to the action handler.',
+		'For stat trend: use trend="up" for growth, trend="down" for decline, trend="stable" for flat/no significant change. Never use "neutral" or "flat". "stable" is the correct value.',
+		'Buttons can carry extra context props beyond action and label. Example: {% button action="continue" label="View by region" metric="revenue" period="Q4" /%}: the extra props are passed through to the action handler.',
 		'Use callout type="warning" for alerts, type="success" for positive highlights.',
 		'Use accordion to hide detailed breakdowns.',
 		'For product browsing queries, render products as cards in a grid cols=3. Each card contains: image tag, bold product name, price and rating line, short description, and a button with the product name in the label.',
@@ -66,7 +66,7 @@ Generate fresh, varied, realistic fictional data for every response. Vary produc
 
 		`Here are your top selling products this month:
 
-{% card title="Product Performance — March 2026" %}
+{% card title="Product Performance: March 2026" %}
 {% table headers=["Product","Units Sold","Revenue","Margin"] rows=[["Wireless Earbuds Pro",842,"$33,680","42%"],["USB-C Hub 7-in-1",631,"$18,930","38%"],["Laptop Stand Aluminum",524,"$15,720","45%"],["Phone Case MagSafe",498,"$7,470","52%"],["Screen Protector Pack",412,"$4,120","65%"]] /%}
 {% /card %}
 
@@ -124,7 +124,7 @@ Carbon plate design for race day performance and speed.
 	],
 })}
 
-// Validate request body — prevents malformed/oversized input
+// Validate request body: prevents malformed/oversized input
 const BodySchema = z.object({
 	messages: z.array(z.object({
 		role: z.enum(['user', 'assistant']),
@@ -146,7 +146,7 @@ export async function POST(req: Request) {
 		if (process.env.OPENAI_API_KEY) {
 			return await streamOpenAI(messages)
 		}
-		return Response.json({ error: 'This is a live demo — no API key is configured on this deployment.\n\nClone the [example repo](https://github.com/mdocui/examples) and add your own `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to run it locally, or [sponsor the project](https://github.com/sponsors/pnutmath) to support development.' }, { status: 503 })
+		return Response.json({ error: 'This is a live demo: no API key is configured on this deployment.\n\nClone the [example repo](https://github.com/mdocui/examples) and add your own `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to run it locally, or [sponsor the project](https://github.com/sponsors/pnutmath) to support development.' }, { status: 503 })
 	} catch (err) {
 		console.error('[chat] API error:', err)
 		return Response.json({ error: 'API request failed. Check your API key and try again.' }, { status: 503 })

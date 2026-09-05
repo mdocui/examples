@@ -7,7 +7,7 @@ import { registry, renderProse } from '@/lib/mdocui'
 
 const knownTags = registry.knownTags()
 
-const defaultMarkup = `## Store Dashboard — March 2026
+const defaultMarkup = `## Store Dashboard: March 2026
 
 {% card title="Key Metrics" %}
 {% grid cols=4 %}
@@ -43,7 +43,7 @@ const defaultMarkup = `## Store Dashboard — March 2026
 {% /tabs %}
 
 {% card title="Monthly Target" %}
-{% progress value=78 label="Revenue Goal — $62,000" /%}
+{% progress value=78 label="Revenue Goal: $62,000" /%}
 {% /card %}
 
 {% accordion title="Customer Segments" %}

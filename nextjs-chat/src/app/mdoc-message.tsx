@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * MdocMessage — renders a completed assistant message.
+ * MdocMessage: renders a completed assistant message.
  * Parsed once per content value via useMemo; useRenderer is for the live pane.
  */
 

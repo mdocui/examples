@@ -126,7 +126,7 @@ const codeLines = [
 export default function Home() {
 	return (
 		<div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-			{/* Hero — always dark for logo visibility */}
+			{/* Hero: always dark for logo visibility */}
 			<div className="bg-zinc-950 text-zinc-100">
 			<section className="relative px-6 pt-20 pb-24 flex flex-col items-center text-center max-w-4xl mx-auto">
 				<div className="flex flex-col items-center">
@@ -145,7 +145,7 @@ export default function Home() {
 						Generative UI for LLMs
 					</h1>
 					<p className="text-lg text-zinc-400 max-w-2xl mb-10 leading-relaxed">
-						LLMs write markdown and drop interactive UI components in the same stream — charts, buttons, forms, tables, cards. No custom DSL, no JSON blocks.
+						LLMs write markdown and drop interactive UI components in the same stream: charts, buttons, forms, tables, cards. No custom DSL, no JSON blocks.
 					</p>
 
 					<div className="relative inline-block w-full max-w-lg">
@@ -195,11 +195,11 @@ export default function Home() {
 			{/* Demo GIF */}
 			<section className="px-6 py-20 max-w-4xl mx-auto">
 				<h2 className="text-2xl font-bold text-center mb-4">See it in action</h2>
-				<p className="text-zinc-500 dark:text-zinc-400 text-center mb-10 max-w-xl mx-auto">An LLM streams a full analytics dashboard — stats, charts, tables, and action buttons — all in real-time.</p>
+				<p className="text-zinc-500 dark:text-zinc-400 text-center mb-10 max-w-xl mx-auto">An LLM streams a full analytics dashboard: stats, charts, tables, and action buttons: all in real-time.</p>
 				<div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-lg">
 					<img
 						src="https://raw.githubusercontent.com/mdocui/.github/main/assets/demo.gif"
-						alt="mdocUI demo — LLM streaming a dashboard with stats, charts, tables, and action buttons in real-time"
+						alt="mdocUI demo: LLM streaming a dashboard with stats, charts, tables, and action buttons in real-time"
 						className="w-full"
 						width={1200}
 						height={676}
@@ -232,7 +232,7 @@ export default function Home() {
 					<div className="flex flex-col justify-center">
 						<h3 className="text-xl font-semibold mb-3">Markdoc syntax, zero friction</h3>
 						<p className="text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
-							The LLM streams plain text with <code className="text-blue-600 dark:text-blue-400 bg-zinc-100 dark:bg-zinc-900 px-1.5 py-0.5 rounded text-xs">{`{% tag %}`}</code> delimiters. The streaming parser tokenizes each chunk as it arrives and renders live UI components — stats, charts, tables, forms — inline with prose.
+							The LLM streams plain text with <code className="text-blue-600 dark:text-blue-400 bg-zinc-100 dark:bg-zinc-900 px-1.5 py-0.5 rounded text-xs">{`{% tag %}`}</code> delimiters. The streaming parser tokenizes each chunk as it arrives and renders live UI components: stats, charts, tables, forms: inline with prose.
 						</p>
 						<p className="text-zinc-500 dark:text-zinc-400 leading-relaxed">
 							No JSON schema negotiation. No tool calls. No post-processing. The model just writes, and users see rich interactive UI appear character by character.
@@ -355,7 +355,7 @@ export default function Home() {
 						},
 						{
 							q: 'Which LLM providers does it work with?',
-							a: 'Any provider that streams text — OpenAI, Anthropic, Google, Mistral, local models, or any custom API. mdocUI parses the output, it doesn\'t care where it comes from.',
+							a: 'Any provider that streams text: OpenAI, Anthropic, Google, Mistral, local models, or any custom API. mdocUI parses the output, it doesn\'t care where it comes from.',
 						},
 						{
 							q: 'Do I need to train the model on the syntax?',
@@ -371,7 +371,7 @@ export default function Home() {
 						},
 						{
 							q: 'How does streaming work?',
-							a: 'The parser processes tokens character-by-character using a state machine. As soon as {% is detected, it switches from prose mode to tag mode. No buffering, no regex, no lookahead — components appear the moment the closing tag arrives.',
+							a: 'The parser processes tokens character-by-character using a state machine. As soon as {% is detected, it switches from prose mode to tag mode. No buffering, no regex, no lookahead: components appear the moment the closing tag arrives.',
 						},
 						{
 							q: 'What frameworks are supported?',
@@ -391,7 +391,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* Footer — always dark */}
+			{/* Footer: always dark */}
 			<footer className="bg-zinc-950 text-zinc-100 border-t border-zinc-800 px-6 py-12">
 				<div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
 					<div className="flex items-center gap-3">

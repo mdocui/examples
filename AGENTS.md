@@ -1,8 +1,8 @@
-# AGENTS.md — mdocUI Examples
+# AGENTS.md: mdocUI Examples
 
 ## Structure
 
-- `nextjs-chat/` — ShopMetrics: e-commerce analytics demo with Next.js 16
+- `nextjs-chat/`: ShopMetrics: e-commerce analytics demo with Next.js 16
 
 ## Running
 
@@ -15,21 +15,21 @@ pnpm dev
 
 ## Key files
 
-- `src/app/api/chat/route.ts` — system prompt + LLM streaming (Zod validated)
-- `src/app/mdoc-registry.ts` — 24 component definitions with Zod schemas
-- `src/app/mdoc-message.tsx` — StreamingParser + Renderer integration with theme-aware classNames
-- `src/app/page.tsx` — chat UI with action handling, theme switcher, streaming indicator
-- `src/app/globals.css` — chart/progress color overrides via data-* attributes
-- `src/app/theme-provider.tsx` — light/dark theme context with localStorage persistence
+- `src/app/api/chat/route.ts`: system prompt + LLM streaming (Zod validated)
+- `src/app/mdoc-registry.ts`: 24 component definitions with Zod schemas
+- `src/app/mdoc-message.tsx`: StreamingParser + Renderer integration with theme-aware classNames
+- `src/app/page.tsx`: chat UI with action handling, theme switcher, streaming indicator
+- `src/app/globals.css`: chart/progress color overrides via data-* attributes
+- `src/app/theme-provider.tsx`: light/dark theme context with localStorage persistence
 
 ## Implementation pattern
 
 1. Define components in registry with Zod schemas (`mdoc-registry.ts`)
-2. Call `generatePrompt(registry, options)` to build system prompt — library auto-generates syntax/component docs, app adds domain rules and examples
+2. Call `generatePrompt(registry, options)` to build system prompt: library auto-generates syntax/component docs, app adds domain rules and examples
 3. Stream LLM response as `text/plain` using native Anthropic/OpenAI SDK
 4. Parse on client with `StreamingParser` from `@mdocui/core`
 5. Render with `<Renderer>` + `defaultComponents` + `classNames` for theming
-6. Handle actions via `onAction` callback — buttons send follow-up messages, forms submit state
+6. Handle actions via `onAction` callback: buttons send follow-up messages, forms submit state
 
 ## Publishing
 

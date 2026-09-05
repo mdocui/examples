@@ -4,7 +4,7 @@
 
 ## Overview
 
-mdocUI lets LLMs write natural markdown and drop interactive UI components in the same stream using Markdoc `{% %}` tag syntax. The streaming parser tokenizes chunks character-by-character and the React renderer displays 24 theme-neutral components — charts, buttons, forms, tables, cards, and more.
+mdocUI lets LLMs write natural markdown and drop interactive UI components in the same stream using Markdoc `{% %}` tag syntax. The streaming parser tokenizes chunks character-by-character and the React renderer displays 24 theme-neutral components: charts, buttons, forms, tables, cards, and more.
 
 ## Packages
 

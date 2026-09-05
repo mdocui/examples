@@ -19,7 +19,7 @@
   display: none !important;
 }
 
-/* ─── Grid responsive — horizontal scroll for 3+ columns ─── */
+/* ─── Grid responsive: horizontal scroll for 3+ columns ─── */
 [data-mdocui-grid] {
   max-width: 100% !important;
   overflow-x: auto !important;
@@ -45,7 +45,7 @@
   }
 }
 
-/* ─── Table responsive — horizontal scroll on overflow ─── */
+/* ─── Table responsive: horizontal scroll on overflow ─── */
 [data-mdocui-table] {
   display: block !important;
   overflow-x: auto !important;
