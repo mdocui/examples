@@ -17,6 +17,9 @@ importers:
       '@mdocui/react':
         specifier: ^0.8.0
         version: 0.8.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@mdocui/web-components':
+        specifier: ^0.8.0
+        version: 0.8.0
       next:
         specifier: ^16.3.4
         version: 16.3.4(@types/node@26.4.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -260,6 +263,9 @@ packages:
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
+
+  '@mdocui/web-components@0.8.0':
+    resolution: {integrity: sha512-NT7BLz8yxhc+EZ5ruu9/MBRQtl6e377pQfOt+rqW531XVWsByo3Ve3cvC/uuKmKUwT540FYpZ7Y+aSABrSsD7w==}
 
   '@next/env@16.3.4':
     resolution: {integrity: sha512-cjWZnUUa6jZq2kFaNe/ZyJdZonOZ/QoN0Zka2nz/FLOrfx14pQuM9c5RaSVkWMqgdt4ksgPAMWPyHSs/CyV48Q==}
@@ -822,6 +828,10 @@ snapshots:
       '@mdocui/core': 0.8.0
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
+
+  '@mdocui/web-components@0.8.0':
+    dependencies:
+      '@mdocui/core': 0.8.0
 
   '@next/env@16.3.4': {}
 
